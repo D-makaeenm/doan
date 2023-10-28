@@ -2,7 +2,7 @@
     $("#nutne").on("click", function () {
         $.confirm({
             title: 'Nhập tên',
-            content: '' +
+            content: '' +//chỉnh dài rộng là dùng .jconfirm-box trong css
                 '<form>' +
                 '<div class="onhapten">' +
                 '<label for="name">Tên:</label>' +
