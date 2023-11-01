@@ -67,10 +67,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="32.ico" />
+    <Content Include="asset\bootstrap.min.css" />
+    <Content Include="asset\jquery-3.7.1.min.js" />
+    <Content Include="asset\jquery-confirm.min.css" />
+    <Content Include="asset\jquery-confirm.min.js" />
     <Content Include="HtmlPage1.html" />
     <Content Include="HtmlPage2.html" />
     <Content Include="JavaScript.js" />
     <Content Include="log2.png" />
+    <Content Include="pizzapng.png" />
     <Content Include="StyleSheet1.css" />
     <Content Include="Web.config" />
   </ItemGroup>
