@@ -11,7 +11,7 @@
                 `<label>Tài khoản</label>` +
                 `<input type="text" placeholder="Tài khoản" class="tk form-control" required />` +
                 `<label>Mật khẩu</label>` +
-                `<input type="text" placeholder="Mật khẩu" class="mk form-control" required />` +
+                `<input type="password" placeholder="Mật khẩu" class="mk form-control" required />` +
                 `</div` +
                 `</form>`
             ,
@@ -41,6 +41,8 @@
                                         }
                                         if (loginok) {
                                             $.alert("Đăng nhập thành công!");
+                                            $('#btn-login').hide();
+                                            $('#hello').show();
                                         }
                                         else {
                                             $.alert("Sai tài khoản hoặc mật khẩu!");

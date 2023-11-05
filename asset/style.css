@@ -1,0 +1,11 @@
+﻿.custom-large-button {
+    font-size: 20px; /* Đặt kích thước chữ */
+    padding: 20px 40px; /* Đặt lề để tạo kích thước */
+}
+
+.custom-width{
+    width:80%;
+    margin-right:90px;
+}
+
+
