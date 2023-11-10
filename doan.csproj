@@ -80,8 +80,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="anh\32.ico" />
     <Content Include="anh\anh1.jpg" />
     <Content Include="anh\anh2.jpg" />
+    <Content Include="anh\Margherita-pizza.jpg" />
+    <Content Include="anh\pizza_bo_bam.jpg" />
+    <Content Include="anh\pizza_hai_san.jpg" />
+    <Content Include="anh\pizza_hawaii.jpg" />
+    <Content Include="anh\pizza_pho_mai.jpg" />
+    <Content Include="anh\thapcam.jpg" />
     <Content Include="api.aspx" />
     <Content Include="asset\bootstrap.css" />
     <Content Include="asset\bootstrap.js" />

@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Pizza TNUT</title>
-    <link rel="icon" type="image/x-icon" href="/32.ico">
+    <title>Pizza Hut</title>
+    <link rel="icon" type="image/x-icon" href="anh/32.ico">
     <script src="asset/jquery-3.7.1.min.js"></script>
     <script src="asset/jquery-confirm.min.js"></script>
     <link href="asset/jquery-confirm.min.css" rel="stylesheet" />
@@ -40,9 +40,9 @@
 
             </div>
             <p class="col-auto m-lg-auto" style="display:none" id="hello">Xin chào<b> Quản lý</b></p>
+           
         </div>
         <button class="btn btn-primary m-lg-3" type="button" id="btn-login" style="float: right">Login</button>
-
     </nav>
 
 
@@ -64,39 +64,262 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
-    </div>
-
-    <!--<div class="btn-group-vertical pl-0 custom-width" role="group" aria-label="Vertical button group">
-        <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Button</button>
-        <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Button</button>
-        <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Button</button>
-        <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Button</button>
-    </div>
-    <div class="container text-center">
-        <div class="row row-cols-2" >
-            <div class="col border">Column</div>
-            <div class="col border">Column</div>
-        </div>
-    </div>-->
-
-    <div class="container-fluid">
+    </div> 
+    <div class="container-fluid" style="margin-right:30px">
         <div class="row g-0 text-center">
             <div class="col-sm-3">
 
                 <div class="btn-group-vertical" style="width:80%; float:left" role="group" aria-label="Vertical button group">
-                    <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Button</button>
-                    <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Button</button>
-                    <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Button</button>
-                    <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Button</button>
+                    <button type="button" id="them-don" class="btn btn-primary my-2 rounded-pill custom-large-button">Nhập đơn mới</button>
+                    <button type="button" id ="test-cn"class="btn btn-primary my-2 rounded-pill custom-large-button">Test chức năng</button>
+                    <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Công thức</button>
+                    <button type="button" class="btn btn-primary my-2 rounded-pill custom-large-button">Nguyên liệu</button>
                 </div>
 
             </div>
+
             <div class="col-sm-9 text-center">
                 <strong style="font-size:30px">MENU</strong>
-                <div>
-                    Ở đây để menu này
+                <div> 
+                        <div class="container text-center border border-success p-2 mb-2">
+                            <div class="row">
+                                <div class="col-auto d-flex align-items-center">
+                                    <img src="anh/Margherita-pizza.jpg" alt="Alternate Text" style="height:120px; width:120px" />
+                                </div>
+                                <div class="col py-4">
+                                    <p style="font-size:20px">
+                                    <abbr title="là một loại pizza đặc trưng đến từ vùng Napoli, được làm bằng cà chua San Marzano, phô mai mozzarella, húng quế tươi, muối và dầu ô liu thêm nguyên chất.">Pizza Margherita</abbr>
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="row">
+                                        <table>
+                                            <tr>
+                                                <td>Mã bánh</td>
+                                                <td>Size</td>
+                                                <td>Giá</td>
+                                            </tr>
+                                            <tr>
+                                                <td>pz-01</td>
+                                                <td>Size Nhỏ</td>
+                                                <td> 107.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Vừa</td>
+                                                <td> 178.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Lớn</td>
+                                                <td>215.000đ</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container text-center border border-success p-2 mb-2">
+                            <div class="row">
+                                <div class="col-auto d-flex align-items-center">
+                                    <img src="anh/thapcam.jpg" alt="Alternate Text" style="height:120px; width:120px" />
+                                </div>
+                                <div class="col py-4">
+                                    <p style="font-size:20px">
+                                        <abbr title="Pizza thập cẩm là một loại pizza phổ biến, thường được làm bằng lớp vỏ mỏng và phô mai lấp lánh, kết hợp đa dạng với xúc xích, hành tây, ớt chuông, nấm, cà chua, và gia vị đa dạng. Màu sắc tươi sáng bắt mắt với lớp topping được đặt lên bề mặt bánh.">Pizza thập cẩm</abbr>
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="row">
+                                        <table>
+                                            <tr>
+                                                <td>Mã bánh</td>
+                                                <td>Size</td>
+                                                <td>Giá</td>
+                                            </tr>
+                                            <tr>
+                                                <td>pz-02</td>
+                                                <td>Size Nhỏ</td>
+                                                <td> 129.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Vừa</td>
+                                                <td> 219.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Lớn</td>
+                                                <td>289.000đ</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container text-center border border-success p-2 mb-2">
+                            <div class="row">
+                                <div class="col-auto d-flex align-items-center">
+                                    <img src="anh/pizza_bo_bam.jpg" alt="Alternate Text" style="height:120px; width:120px" />
+                                </div>
+                                <div class="col py-4">
+                                    <p style="font-size:20px">
+                                    <abbr title="Món Pizza bò bằm có thể gọi là món ăn quốc dân. Vị giòn dai của đế bánh Pizza, kết hợp sốt cà chua chua chua ngọt ngọt, hòa quyện vị béo của phô mai Mozzarella. Bên trên, topping chủ đạo của nhân bánh là thịt bò bằm nhuyễn vừa thơm, vừa giàu dinh dưỡng. Tạo nên hương vị thơm ngon, lôi cuốn.">Pizza bò bằm</abbr>
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="row">
+                                        <table>
+                                            <tr>
+                                                <td>Mã bánh</td>
+                                                <td>Size</td>
+                                                <td>Giá</td>
+                                            </tr>
+                                            <tr>
+                                                <td>pz-03</td>
+                                                <td>Size Nhỏ</td>
+                                                <td> 119.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Vừa</td>
+                                                <td> 179.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Lớn</td>
+                                                <td>249.000đ</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container text-center border border-success p-2 mb-2">
+                            <div class="row">
+                                <div class="col-auto d-flex align-items-center">
+                                    <img src="anh/pizza_hai_san.jpg" alt="Alternate Text" style="height:120px; width:120px" />
+                                </div>
+                                <div class="col py-4">
+                                    <p style="font-size:20px">
+                                        <abbr title="Những chiếc bánh pizza hải sản trở nên hấp dẫn , lôi cuốn đối với những người có niềm yêu thích với pizza, một những hương vị hải sản hòa quyện với nhau tạo nên một sản phẩm vô cùng cuốn hút. Sự kết hợp của những nguyên liệu như bột tươi, sốt marinara, hải sản , hành, dứa, phô mai Mozzarella, sốt Pesto. Hương vị hải sản từ tôm, mực, ngao kết hợp với độ ngậy của sốt và phô mai tạo thành một chiếc bánh pizza thật là tuyệt vời.">Pizza hải sản</abbr>
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="row">
+                                        <table>
+                                            <tr>
+                                                <td>Mã bánh</td>
+                                                <td>Size</td>
+                                                <td>Giá</td>
+                                            </tr>
+                                            <tr>
+                                                <td>pz-04</td>
+                                                <td>Size Nhỏ</td>
+                                                <td> 129.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Vừa</td>
+                                                <td> 199.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Lớn</td>
+                                                <td>269.000đ</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container text-center border border-success p-2 mb-2">
+                            <div class="row">
+                                <div class="col-auto d-flex align-items-center">
+                                    <img src="anh/pizza_hawaii.jpg" alt="Alternate Text" style="height:120px; width:120px" />
+                                </div>
+                                <div class="col py-4">
+                                    <p style="font-size:20px">
+                                        <abbr title="Món pizza hawaiian mang cái tên rất nhiệt đới, gợi nhiều liên tưởng đến vùng Hawaii (Mỹ). Tuy nhiên, món ăn này lại có xuất xứ từ Canada, do một người Hy Lạp nghĩ ra. Ngày nay pizza hawaiian đã trở thành món ăn nổi tiếng, gần như không thể thiếu trong các thực đơn Pizza và các món Âu. Thành phần của Pizza hawaiian gồm có jăm bông, dứa, phô mai mozzarella & sốt cà chua và các hương vị đặc trưng. Đây là chiếc bánh pizza mang sự kết hợp hòa quyện giữa vị ngọt và mặn của phong cách nhiệt đới. Sự tương phản giữa vị chua, ngọt của dứa và mặn của dăm bông khiến nhiều thực khách bất ngờ.">Pizza Hawaii</abbr>
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="row">
+                                        <table>
+                                            <tr>
+                                                <td>Mã bánh</td>
+                                                <td>Size</td>
+                                                <td>Giá</td>
+                                            </tr>
+                                            <tr>
+                                                <td>pz-05</td>
+                                                <td>Size Nhỏ</td>
+                                                <td> 155.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Vừa</td>
+                                                <td> 195.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Lớn</td>
+                                                <td>265.000đ</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container text-center border border-success p-2 mb-2">
+                            <div class="row">
+                                <div class="col-auto d-flex align-items-center">
+                                    <img src="anh/pizza_pho_mai.jpg" alt="Alternate Text" style="height:120px; width:120px" />
+                                </div>
+                                <div class="col py-4">
+                                    <p style="font-size:20px">
+                                        <abbr title="Pizza phô mai là một trong những loại pizza được sử dụng phổ biến trên khắp thế giới. Cùng với nhiều loại nhân khác như hải sản, thịt hun khói, xúc xích,… phô mai được người dùng ưa chuộng khi lựa chọn pizza. là sự kết hợp hoàn hảo của bột bánh mịn, lớp vỏ bánh mỏng được nướng đều tay, tạo thành lớp đế giòn thơm ngon. Phủ trên bánh là một lớp phô mai óng mượt, béo ngậy, thêm lớp sốt cà chua mịn màng. Trên cùng mặt bánh rắc một ít lá thơm.">Pizza phô mai</abbr>
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="row">
+                                        <table>
+                                            <tr>
+                                                <td>Mã bánh</td>
+                                                <td>Size</td>
+                                                <td>Giá</td>
+                                            </tr>
+                                            <tr>
+                                                <td>pz-06</td>
+                                                <td>Size Nhỏ</td>
+                                                <td> 119.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Vừa</td>
+                                                <td> 179.000đ</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Size Lớn</td>
+                                                <td>249.000đ</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    
                 </div>
             </div>
+
+
         </div>
     </div>
 
