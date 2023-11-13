@@ -98,6 +98,9 @@
     <Content Include="asset\jquery-confirm.min.css" />
     <Content Include="asset\jquery-confirm.min.js" />
     <Content Include="asset\Codejs.js" />
+    <Content Include="database\doan.sql" />
+    <Content Include="database\sp_donhang.sql" />
+    <Content Include="database\sp_login.sql" />
     <Content Include="HtmlPage2.html" />
     <Content Include="log2.png" />
     <Content Include="pizzapng.png" />

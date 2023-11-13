@@ -20,8 +20,9 @@ namespace doan
             {
                 case "tong_tien":
                 case "them_don_hang":
-                    
+                case "cong_thuc":
                     cmd.Parameters.Add("@makh", SqlDbType.NVarChar, 255).Value = Request["makh"];
+                    cmd.Parameters.Add("@congthuc", SqlDbType.NVarChar, -1).Value = Request["congthuc"];
                     cmd.Parameters.Add("@ngaydat", SqlDbType.Date).Value = Request["ngaydat"];
                     cmd.Parameters.Add("@mabanh", SqlDbType.NVarChar, 10).Value = Request["mabanh"];
                     cmd.Parameters.Add("@size", SqlDbType.NVarChar, 10).Value = Request["size"];
@@ -36,10 +37,15 @@ namespace doan
             }
             switch (action)
             {
-                case "xoa_don_hang":
                 case "edit_don_hang":
-                cmd.Parameters.Add("@madon", SqlDbType.Int).Value = Request["madon"];
-                break;
+                case "xoa_don_hang":
+                case "doanh_thu":
+                    cmd.Parameters.Add("@thiethai", SqlDbType.Int).Value = Request["thiethai"];
+                    cmd.Parameters.Add("@ngayvao", SqlDbType.Date).Value = Request["ngayvao"];
+                    cmd.Parameters.Add("@ngayra", SqlDbType.Date).Value = Request["ngayra"];
+                    cmd.Parameters.Add("@madon", SqlDbType.Int).Value = Request["madon"];
+                    break;
+                
             }
             string json = (string)db.Scalar(cmd);
             Response.Write(json);
@@ -61,6 +67,10 @@ namespace doan
                 case "list_don_hang":
                 case "them_don_hang":
                 case "tong_tien":
+                case "cong_thuc":
+                case "edit_don_hang":
+                case "xoa_don_hang":
+                case "doanh_thu":
                     xuly_donhang(action);
                     break;
                 case "logins":
