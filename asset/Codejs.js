@@ -40,7 +40,7 @@
                                             }
                                         }
                                         if (loginok) {
-                                            $.alert("Đăng nhập thành côngss!");
+                                            $.alert("Đăng nhập thành công!");
                                             $('#btn-login').hide();
                                             goihello();
                                         }
