@@ -463,47 +463,52 @@
                     action: function () {
                         var ngayvao = $('#ngay-vao').val();
                         var ngayra = $('#ngay-ra').val();
-                        var data_gui_di = {
-                            action: 'doanh_thu',
-                            ngayvao: ngayvao,
-                            ngayra: ngayra
+                        if (ngayra === "" || ngayvao === "") {
+                            alert("Hãy điền đủ thông tin");
                         }
-                        alert(data_gui_di);
-                        $.post(api, data_gui_di, function (data) {
-                            console.log(data_gui_di);
-                            var json = JSON.parse(data);
-                            var noidung = "";
-                            if (json.ok) {
-                                noidung += `<table class="table table-hover">`;
-                                noidung += `<thead>
+                        else {
+                            var data_gui_di = {
+                                action: 'doanh_thu',
+                                ngayvao: ngayvao,
+                                ngayra: ngayra
+                            }
+
+                            $.post(api, data_gui_di, function (data) {
+                                console.log(data_gui_di);
+                                var json = JSON.parse(data);
+                                var noidung = "";
+                                if (json.ok) {
+                                    noidung += `<table class="table table-hover">`;
+                                    noidung += `<thead>
                                 <tr>
                                     <th>Tiền thu</th>
                                     <th>Tiền chi</th>
                                     <th>Tổng doanh thu</th>
                                 </tr>
                                 </thead><tbody>`;
-                                var tongdt = 0;
-                                var tienthu = 0;
-                                var tienchi = 0;
-                                for (var dh of json.data) {
+                                    var tongdt = 0;
+                                    var tienthu = 0;
+                                    var tienchi = 0;
+                                    for (var dh of json.data) {
                                         tienthu += parseInt(dh.tongtien);
                                         tienchi += parseInt(dh.thiethai);
                                         tongdt = tienthu - tienchi;
-                                        noidung += `
+                                    }
+                                    noidung += `
                                         <tr>
                                         <td>${tienthu}</td>
                                         <td>${tienchi}</td>
                                         <td>${tongdt}</td>
                                         </tr>`;
-                                    
+                                    noidung += `</tbody></table>`;
                                 }
-                                noidung += `</tbody></table>`;
-                            }
-                            else {
-                                noidung = "Không có dữ liệu doanh thu cho khoảng thời gian này.";
-                            }
-                            $('#dt-thang').html(noidung);
-                        });
+                                else {
+                                    noidung = "Không có dữ liệu doanh thu cho khoảng thời gian này.";
+                                }
+                                $('#dt-thang').html(noidung);
+                            });
+                        }
+                        
                         
                         return false;
                     }
