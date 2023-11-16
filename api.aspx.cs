@@ -18,7 +18,7 @@ namespace doan
             SqlCommand cmd = db.GetCmd("ql_don", action);
             switch (action)
             {
-                case "tong_tien":
+                case "don_da_xoa":
                 case "them_don_hang":
                 case "cong_thuc":
                     cmd.Parameters.Add("@makh", SqlDbType.NVarChar, 255).Value = Request["makh"];
@@ -33,6 +33,7 @@ namespace doan
                     cmd.Parameters.Add("@tongtien", SqlDbType.Int).Value = Request["tongtien"];
                     cmd.Parameters.Add("@diachi", SqlDbType.NVarChar, 255).Value = Request["diachi"];
                     cmd.Parameters.Add("@sdt", SqlDbType.NVarChar, 255).Value = Request["sdt"];
+                    cmd.Parameters.Add("@delat", SqlDbType.Date).Value = Request["delat"];
                     break;
             }
             switch (action)
@@ -66,7 +67,7 @@ namespace doan
             {
                 case "list_don_hang":
                 case "them_don_hang":
-                case "tong_tien":
+                case "don_da_xoa":
                 case "cong_thuc":
                 case "edit_don_hang":
                 case "xoa_don_hang":

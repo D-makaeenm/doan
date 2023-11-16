@@ -9,8 +9,10 @@
     <link href="asset/jquery-confirm.min.css" rel="stylesheet" />
     <link href="asset/bootstrap.min.css" rel="stylesheet" />
     <script src="asset/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
     <script src="asset/Codejs.js"></script>
-    <link href="asset/style.css" rel="stylesheet"/>
+    <link href="asset/style.css" rel="stylesheet" />
+    <link href="fontawesome-free-6.4.2-web/css/all.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -28,21 +30,23 @@
                 <ul class="navbar-nav" style="float:left">
                     <li class="nav-item">
                         <button class="btn btn-primary" style="margin-right: 10px" id="xem-don">
-                            Xem đơn hàng
+                            <i class="fa-solid fa-list"></i> Xem đơn hàng
                         </button>
                     </li>
                     <li class="nav-item" id="tong-thu-chi">
-                        <button class="btn btn-primary">
-                            Tổng thu chi
+                        <button class="btn btn-primary" style="background-color:deeppink">
+                            <i class="fa-solid fa-calculator"></i> Tổng thu chi
                         </button>
                     </li>
                 </ul>
 
             </div>
             <p class="col-auto m-lg-auto" style="display:none" id="hello">Xin chào<b> Quản lý</b></p>
-           
+            <p class="col-auto m-lg-auto" style="display:none" id="hello1">Xin chào<b> Manager</b></p>
+
         </div>
-        <button class="btn btn-primary m-lg-3" type="button" id="btn-login" style="float: right">Login</button>
+        <button class="btn btn-primary m-lg-3" type="button" id="btn-login" style="float: right; width:95px"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+        <button class="btn btn-primary m-lg-3 " type="button" id="btn-logout" style="background-color: red ;float: right; display: none; width: 110px"><i class="fa-solid fa-right-to-bracket"></i> Logout</button>
     </nav>
 
 
@@ -70,9 +74,9 @@
             <div class="col-sm-3">
 
                 <div class="btn-group-vertical" style="width:80%; float:left" role="group" aria-label="Vertical button group">
-                    <button type="button" id="them-don" class="btn btn-primary my-2 rounded-pill custom-large-button">Nhập đơn mới</button>
-                    <button type="button" id ="test-cn"class="btn btn-primary my-2 rounded-pill custom-large-button">Test chức năng</button>
-                    <button type="button" id="cong-thuc" class="btn btn-primary my-2 rounded-pill custom-large-button">Công thức</button>
+                    <button type="button" style="background-color:forestgreen" id="them-don" class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-plus"></i> Nhập đơn mới</button>
+                    <button type="button" style="background-color: orangered" id ="don-da-xoa"class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-x"></i> Đơn đã xóa</button>
+                    <button type="button" style="background-color: orange" id="cong-thuc" class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-pizza-slice"></i> Công thức</button>
                     
                 </div>
 
@@ -323,5 +327,11 @@
         </div>
     </div>
 
+    <footer style="background-color:black; padding-top:20px">
+        <p>
+            Author: Hege Refsnes<br>
+            <a href="mailto:hege@example.com">hege@example.com</a>
+        </p>
+    </footer>
 </body>
 </html>

@@ -1,9 +1,12 @@
 ﻿$(document).ready(function () {
     const api = '/api.aspx'
     //------------------------------------------------------------------
-    $('#btn-login').click(function () {
+
+    let dalogin = false;
+    let quyen = 0;
+
+    function dologin() {
         $.confirm({
-            
             title: "Đăng nhập",
             content: ``
                 + `<form action="" class="form_name">` +
@@ -34,20 +37,32 @@
                                     var loginok = false;
                                     if (json.ok) {
                                         for (var tt of json.data) {
-                                            if (tt.tk == tkb && tt.mk == mkb) {
-                                                loginok = true;
+                                            if (tt.tk == tkb && tt.mk == mkb && tt.roles == 1 ) {
+                                                quyen = 1;
+                                                dalogin = true;
+                                                break;
+                                            }
+                                            else if (tt.tk == tkb && tt.mk == mkb && tt.roles == 2) {
+                                                dalogin = true;
+                                                quyen = 2;
                                                 break;
                                             }
                                         }
-                                        if (loginok) {
+                                        if (quyen == 1) {
                                             $.alert("Đăng nhập thành công!");
                                             $('#btn-login').hide();
-                                            goihello();
+                                            $('#hello').show();
+                                            $('#btn-logout').show();
+                                        }
+                                        else if (dalogin) {
+                                            $.alert("Đăng nhập thành công!");
+                                            $('#btn-login').hide();
+                                            $('#hello1').show();
+                                            $('#btn-logout').show();
                                         }
                                         else {
                                             $.alert("Sai tài khoản hoặc mật khẩu!");
                                             return false;
-                                            
                                         }
                                     }
                                 })
@@ -56,13 +71,52 @@
                 },
                 somethingElse: {
                     text: 'Thoát',
-                    btnClass: 'btn-red' 
+                    btnClass: 'btn-red'
                 }
             },
             onContentReady: function () {
-                
+
             }
         })
+    }
+
+    $('#btn-logout').click(function () {
+        logout();
+    });
+
+    function logout() {
+        window.location.href = window.location.origin + window.location.pathname;
+    }
+
+
+    function checkAccess(quyen) {
+        if (!dalogin) { 
+            return 0;
+        }
+        else if (quyen == 1) {
+            return 1;
+        }
+        else if (quyen == 2) {
+            return 2;
+        }
+    }
+
+    $('#tong-thu-chi').click(function () {
+        if (checkAccess(quyen) == 1) {
+            doanhthu();
+        }
+        else if (checkAccess(quyen) == 0) {
+            alert("Bạn cần đăng nhập để sử dụng chức năng này");
+        }
+        else if (checkAccess(quyen) == 2) {
+            alert("Bạn không đủ quyền để thực hiện ")
+        }
+    });
+
+
+
+    $('#btn-login').click(function () {
+        dologin();
     });
     
     function list_don() {
@@ -78,6 +132,14 @@
                     btnClass: 'btn-green any-other-class',
                     action: function () {
                         them_don();
+                        return false;
+                    }
+                },
+                xemdonxoa: {
+                    text: "Xem đơn đã xóa",
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        dondaxoa();
                         return false;
                     }
                 },
@@ -140,19 +202,22 @@
                 }
                 $('#ds_don_hang').html(noidung);
                 $('.nut-sua-xoa').click(function () {
-                    var action = $(this).data('action')  //lấy action kèm theo
-                    var madon = $(this).data('idd')  //lấy cid kèm theo
-                    if (action == 'xoa_don_hang') { //dùng action
-                        //can xac nhan
-                        xoa_don(madon, json); //dùng id vào đây để hàm này xử, cho khỏi rối code
-                    } else if (action == 'edit_don_hang') {
-                        //ko can xac nhan
-                        sua_don(madon, json);
+                    if (checkAccess()) {
+                        var action = $(this).data('action')  //lấy action kèm theo
+                        var madon = $(this).data('idd')  //lấy cid kèm theo
+                        if (action == 'xoa_don_hang') { //dùng action
+                            //can xac nhan
+                            xoa_don(madon, json); //dùng id vào đây để hàm này xử, cho khỏi rối code
+                        } else if (action == 'edit_don_hang') {
+                            //ko can xac nhan
+                            sua_don(madon, json);
+                        }
                     }
                 });
             }
         )
     }
+
 
     function sua_don(madon, json) {
         var don;
@@ -261,56 +326,52 @@
 
     }
 
-
-
-
-
-    function goihello() {
-        $('#hello').show();
-    }
     //--------------------------------------------------------------
 
     function test() {
-        var dialog_add = $.confirm({
-            title: `Thêm mới đơn hàng`,
-            content: '' +
-                '<label>Mã khách hàng:</label>' + '<input class="name form-control" id="nhap-makh">' + 
-                '<label style = "margin-top:10px"> Ngày đặt:</label>' + '<input style = "margin-top:10px" id = "ngay-dat" type="date" name="datePicker"><br>'
-            ,
-            buttons: {
-                save: {
-                    text: `Thêm đơn hàng vào database`,
-                    action: function () {
-                        
-                        var ngaydat = $('#ngay-dat').val();
-                        var makh = $('#nhap-makh').val();
-                        if (makh === "" || ngaydat === "") {
-                            alert("Hãy nhập đủ dữ liệu");
-                            return false;
-                        }
-                        else {
-                            var data_gui_di = {
-                                action: 'tong_tien',
-                                makh: makh,
-                                ngaydat: ngaydat
-                            }
-                            $.post(api, data_gui_di, function (data) {
-                                console.log(data_gui_di);
-                                var json = JSON.parse(data);
-                                alert("da gui thanh cong");
-                                if (json.ok) {
-                                    dialog_add.close();
-                                }
-                                else {
-                                    alert(json.msg);
-                                }
-                            });
-                        }
+        $.post(api, { action: 'don_da_xoa' },
+            function (data) {
+                var json = JSON.parse(data);
+                var noidung = ""; 
+                if (json.ok) {
+                    noidung += `<table class="table table-hover">`;
+                    noidung += `<thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã đơn</th>
+                        <th>Mã khách hàng</th>
+                        <th>Ngày xóa</th>
+                    </tr>
+                    </thead><tbody>`;
+                    var stt = 0;
+                    for (var dh of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
+                        noidung += `
+                        <tr>
+                            <td>${++stt}</td>
+                            <td>${dh.madon}</td>
+                            <td>${dh.makh}</td>
+                            <td>${dh.delat}</td>
+                        </tr>`;
                     }
-                },
-                close: {
-
+                    noidung += "</tbody></table>"
                 }
+                else {
+                    noidung = " khong co du lieu";
+                }
+                $('#ds_xoa').html(noidung);
+            }
+        )
+    }
+
+    function dondaxoa() {
+        $.confirm({
+            title: "Danh sách đơn hàng đã xóa",
+            content: `<div id="ds_xoa">Loading......</div>`,
+            columnClass: 'col-md-12',
+            type: 'green',
+            typeAnimated: true,
+            onContentReady: function () {
+                test();
             }
         });
     }
@@ -524,23 +585,55 @@
     }
 
 
-
-    $('#tong-thu-chi').click(function () {
-        doanhthu();
-    });
-
     $('#them-don').click(function () {
-        them_don();
-    });
-    $('#xem-don').click(function () {
-        list_don();
+        if (checkAccess(quyen) == 1) {
+            them_don();
+        }
+        else if (checkAccess(quyen) == 0) {
+            alert("Bạn cần đăng nhập để sử dụng chức năng này");
+        }
+        else if (checkAccess(quyen) == 2) {
+            them_don();
+        }
+        
     });
 
-    $('#test-cn').click(function () {
-        test();
+    $('#xem-don').click(function () {
+        if (checkAccess(quyen) == 1) {
+            list_don();
+        }
+        else if (checkAccess(quyen) == 0) {
+            alert("Bạn cần đăng nhập để sử dụng chức năng này");
+        }
+        else if (checkAccess(quyen) == 2) {
+            list_don();
+        }
+        
+    });
+
+    $('#don-da-xoa').click(function () {
+        
+        if (checkAccess(quyen) == 1) {
+            dondaxoa();
+        }
+        else if (checkAccess(quyen) == 0) {
+            alert("Bạn cần đăng nhập để sử dụng chức năng này");
+        }
+        else if (checkAccess(quyen) == 2) {
+            dondaxoa();
+        }
     });
     $('#cong-thuc').click(function () {
-        congthuc();
+        if (checkAccess(quyen) == 1) {
+            congthuc();
+        }
+        else if (checkAccess(quyen) == 0) {
+            alert("Bạn cần đăng nhập để sử dụng chức năng này");
+        }
+        else if (checkAccess(quyen) == 2) {
+            congthuc();
+        }
+        
     });
 })
 

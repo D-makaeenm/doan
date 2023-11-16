@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Minh Tuấn Bakery</title>
+    <meta charset="utf-8" />
+    <script src="asset/jquery.min.js"></script>
+    <link href="asset/bootstrap.min.css" rel="stylesheet" />
+    <link href="asset/jquery-confirm.min.css" rel="stylesheet" />
+    <script src="asset/jquery-confirm.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <script src="asset/mycode.js"></script>
+    <link href="Asset/Header.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="#" />
+    <link href="Asset/footer.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <div class="image-slider" id="imageSlider">
+            <img src="IMG/tieude1.jpg" />
+            <img src="IMG/tieude.jpg" />
+            <img src="IMG/tieude1.jpg" />
+            <img src="IMG/tieude2.jpg" />
+            <img src="IMG/tieude.jpg" />
+        </div>
+        <div class="slider-buttons">
+            <button onclick="prevImage()">&#8249;</button>
+            <button onclick="nextImage()">&#8250;</button>
+        </div>
+    </header>
+
+    <script>
+        let currentIndex = 0;
+        const totalImages = document.querySelectorAll('.image-slider img').length;
+
+        function showImage(index) {
+            document.querySelectorAll('.image-slider img').forEach(img => {
+                img.style.opacity = 0;
+            });
+
+            document.querySelectorAll('.image-slider img')[index].style.opacity = 1;
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % totalImages;
+            showImage(currentIndex);
+        }
+
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+            showImage(currentIndex);
+        }
+
+        function autoChangeImage() {
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % totalImages;
+                showImage(currentIndex);
+            }, 4000); // Chuyển ảnh mỗi 3 giây
+        }
+
+        autoChangeImage();
+    </script>
+
+    <nav>
+        <ul>
+            <li>
+                <button class=" btn-nguyenlieu">Nguyên Liệu</button>
+                <button class=" btn-dondathang-admin">Đơn đặt hàng</button>
+                <button class=" btn-doanhthu ">Doanh Thu</button>
+
+
+                <button class=" btn-trangchu">Trang chủ</button>
+                <button class=" btn-dondathang">Đơn đặt hàng</button>
+                <button class=" btn-lichsumua">Lịch sử mua</button>
+
+
+                <button class=" btn-login-ok btn btn-primary" id="nut-login">Đăng Nhập</button>
+                <button class=" btn btn-danger" id="nut-dangky">Đăng ký</button>
+                <label class=" btn-login-ok btn-xinchao not-show" id="text-xinchao"></label>
+                <button class=" btn btn-warning not-show" id="nut-logout">Đăng Xuất</button>
+            </li>
+        </ul>
+    </nav>
+
+
+    <div class="Phan-body">
+
+        <!----Trang chủ ---->
+        <!------------------>
+        <div class="data-trang-chu">
+            <div class="table-trang-chu">
+                <div class="data-table-trang-chu">
+                </div>
+            </div>
+            <div class="trang-chu-benphai">
+                <div class="trang-chu-title">
+                    <input class="input-group-text input-seach" placeholder="Từ tìm kiếm ..." />
+                    <button class="btn btn-primary nut-search"><ion-icon name="search-outline"></ion-icon>Tìm Kiếm</button>
+                </div>
+                <img src="IMG/Anh_order_seach1.jpg" />
+                <img src="IMG/Anh_order_seach2.jpg" />
+            </div>
+        </div>
+
+        <div class="body-phan-giua">
+            <!----DATA doanh thu ---->
+            <!----------------------->
+            <div class="dulieuoday">
+
+            </div>
+
+            <!----Hóa đơn   ---->
+            <!------------------>
+            <div class="data-hoa-don-dat-hang">
+            </div>
+        </div>
+
+    </div>
+
+
+    <footer class="footer" style="padding-top:20px">
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-lg-6">
+                        <h3 class="footer-title">Để lại lời nhắn</h3>
+                        <div id="col-left contactFormWrapper">
+
+
+                            <form accept-charset="UTF-8" action="/contact" class="contact-form" method="post">
+                                <input name="form_type" type="hidden" value="contact">
+                                <input name="utf8" type="hidden" value="✓">
+
+
+                                <div class="contact-form">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="input-group">
+                                                <input required="" type="text" name="contact[name]" class="form-control" placeholder="Tên của bạn" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="input-group">
+                                                <input required="" type="text" name="contact[email]" class="form-control" placeholder="Email của bạn" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="input-group">
+                                                <input pattern="[0-9]{10,12}" required="" type="text" name="contact[phone]" class="form-control" placeholder="Số điện thoại của bạn" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="input-group">
+                                                <textarea required="" name="contact[body]" placeholder="Nội dung"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mb-30">
+                                            <button class="btn btn-dark">Gửi</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input id="c44041f503774125ae261c03c2437fc0" name="g-recaptcha-response" type="hidden" value="03AFcWeA5JtJmGSP5WxT8NftSjmqH8XCvK5Vc4qqnRW8onoMpJcdqyYoPmZhIPmQyddTEtPl-NTYztE7r9OdKCIdfyAqXolTiAVGUuKeNjzMQO1a1oP4fPOKiibLR3vM2HJSCm7FscEOzB9sNHTJ8ajfo-gc99WRY7aDHk-_gu8buq1e_i7uXWgbyNguOkFTlY1xMTneUeIaSHInCgfkSWEbBbYMhlc4eHY4cTf7MVmgAJOtyRfE0kSNY-Ho-4eHxZW5uMB4qUMZ8aZPVouxQlcnxGj76TEgI_0EO3Oz1xJPdSQJOyql-tCk2Wd7RObDSz-wNeFNNu-Vu4sGDmonJ2IouX-TQDi42UaEzvNzeIMkdBWGrPrBrTdhyWtOPlAqr-0zxryCisAfnZHbLDubKXpb7kT0BMIY9YrMgNnmB7tdY0kQDUq2RGFIhAkfTCGZSW8GAiyw48jpIHjJcLRjg_u0Xgfw5SAUtTuE68rQMCxnpSeoHk2h4SpwRcJDwdAf-Fgu74cv-Tphn9r6qwuzLn8yscgK1rZi2raraZ0ilgCCiHQVQNoWVmA215EPEBT3FkL1JR4lSMzItDj3D2_pD1grJUuxhErDLiRxrGw-O3bRFpQLM7mTronuc"><noscript src="https://www.google.com/recaptcha/api.js?render=6LdD18MUAAAAAHqKl3Avv8W-tREL6LangePxQLM-"></noscript><noscript>grecaptcha.ready(function() {grecaptcha.execute('6LdD18MUAAAAAHqKl3Avv8W-tREL6LangePxQLM-', {action: 'submit'}).then(function(token) {document.getElementById('c44041f503774125ae261c03c2437fc0').value = token;});});</noscript>
+                            </form>
+
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="footer-col">
+                            <h3 class="footer-title">
+                                Minh Tuấn Bakery
+                            </h3>
+                            <div class="footer-contact">
+                                <p><i class="fa-map-marker-alt fa"></i><span>123 Ba Hàng - Phổ Yên - Thái Nguyên</span></p>
+                                <p><i class="fa-phone fa"></i><span><a href="tel:0989776730">0989 776 730</a></span></p><p> Mail: cskh@gmail.com.vn</p>
+
+                            </div>
+
+                            <div class="logo-footer">
+                                <a href="http://online.gov.vn/Home/WebDetails/100760" target="_blank" rel="nofollow noreferrer">
+                                    <img src="https://file.hstatic.net/1000300454/file/logo_bct_019590229b4c4dfda690236b67f7aff4.png" alt="Bộ Công Thương">
+                                </a>
+                            </div>
+
+
+                            <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"></script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom text-center">
+            <div class="container">
+                <p>Copyright © 2023 <a href="https://www.facebook.com/MinhTuanBakeryTN"> Facebook</a>  <a target="_blank" href="https://www.haravan.com?ref=govic"></a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
