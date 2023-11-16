@@ -37,7 +37,7 @@
                                     var loginok = false;
                                     if (json.ok) {
                                         for (var tt of json.data) {
-                                            if (tt.tk == tkb && tt.mk == mkb && tt.roles == 1 ) {
+                                            if (tt.tk == tkb && tt.mk == mkb && tt.roles == 1) {
                                                 quyen = 1;
                                                 dalogin = true;
                                                 break;
@@ -90,7 +90,7 @@
 
 
     function checkAccess(quyen) {
-        if (!dalogin) { 
+        if (!dalogin) {
             return 0;
         }
         else if (quyen == 1) {
@@ -118,7 +118,7 @@
     $('#btn-login').click(function () {
         dologin();
     });
-    
+
     function list_don() {
         $.confirm({
             title: "Danh sách đơn hàng",
@@ -147,7 +147,7 @@
                     btnClass: 'btn-red any-other-class'
                 }
             },
-            
+
             onContentReady: function () {
                 capnhatdonhang();
             }
@@ -193,7 +193,7 @@
                             <td>${tongtien}</td>
                             <td>${dh.ngaydat}</td>
                             <td>${sua_xoa}</td>
-                        </tr>`; 
+                        </tr>`;
                     }
                     noidung += "</tbody></table>"
                 }
@@ -202,7 +202,7 @@
                 }
                 $('#ds_don_hang').html(noidung);
                 $('.nut-sua-xoa').click(function () {
-                    if (checkAccess()) {
+                    if (checkAccess(quyen)==1 || checkAccess(quyen)==2) {
                         var action = $(this).data('action')  //lấy action kèm theo
                         var madon = $(this).data('idd')  //lấy cid kèm theo
                         if (action == 'xoa_don_hang') { //dùng action
@@ -232,7 +232,6 @@
             type: 'orange',
             typeAnimated: true,
             content: `` +
-                '<label>Mã khách hàng:</label>' + '<input type="text" placeholder="không được trùng mã kh đã có" class="name form-control" id="edit-makh">' +
                 '<label>Tên khách hàng:</label>' + '<input class="name form-control" id="edit-tenkh">' +
                 '<label>Địa chỉ:</label>' + '<input class="name form-control" id="edit-diachi">' +
                 '<label>SDT</label>' + '<input class="name form-control" id="edit-sdt">' +
@@ -255,7 +254,6 @@
                         var makh = $('#edit-makh').val();
                         var data_gui_di = {
                             action: 'edit_don_hang',
-                            makh: makh,
                             tenkh: $('#edit-tenkh').val(),
                             diachi: $('#edit-diachi').val(),
                             sdt: $('#edit-sdt').val(),
@@ -265,12 +263,10 @@
                             sl: $('#edit-sl').val(),
                             madon: madon
                         }
-                       /* alert(data_gui_di)*/
+                         console.log(data_gui_di)
                         $.post(api, data_gui_di, function (data) {
-                            //alert(data.msg);
-                            //console.log(data);
                             var json = JSON.parse(data);
-                            
+
                             if (json.ok) {
                                 dialog_edit.close();
                                 capnhatdonhang();
@@ -308,8 +304,8 @@
                             madon: madon,
                         }
                         $.post(api, data_gui_di, function (data) {
-                            var json = JSON.parse(data); 
-                            if (json.ok) { 
+                            var json = JSON.parse(data);
+                            if (json.ok) {
                                 dialog_xoa.close();
                                 capnhatdonhang();
                             } else {
@@ -332,7 +328,7 @@
         $.post(api, { action: 'don_da_xoa' },
             function (data) {
                 var json = JSON.parse(data);
-                var noidung = ""; 
+                var noidung = "";
                 if (json.ok) {
                     noidung += `<table class="table table-hover">`;
                     noidung += `<thead>
@@ -390,7 +386,7 @@
                 '<label>Mã khách hàng:</label>' + '<input type="text" placeholder="không được trùng mã kh đã có" class="name form-control" id="nhap-makh" >' +
                 '<label>Tên khách hàng:</label>' + '<input class="name form-control" id="ten-kh">' +
                 '<label>Địa chỉ:</label>' + '<input class="name form-control" id="dia-chi">' +
-                '<label>SDT</label>' + '<input class="name form-control" id="sdt">'+
+                '<label>SDT</label>' + '<input class="name form-control" id="sdt">' +
                 '<label style = "margin-top:10px"> Ngày đặt:</label>' + '<input style = "margin-top:10px" id = "ngay-dat" type="date" name="datePicker"><br>' +
                 '<label style = "margin-top:10px">Mã bánh:</label>' +
                 '<select name="mabanh" style = "margin-top:10px" id= "ma-banh"><option value="pz-01">pz-01</option><option value="pz-02">pz-02</option><option value="pz-03">pz-03</option><option value="pz-04">pz-04</option><option value="pz-05">pz-05</option><option value="pz-06">pz-06</option></select><br>' +
@@ -414,7 +410,7 @@
                         var sl = $('#sl').val();
                         var diachi = $('#dia-chi').val();
                         var sdt = $('#sdt').val();
-                        if (makh === "" || ngaydat === "" || size === "" || tenkh === "" || mabanh === "" || sl==="" || diachi ===""|| sdt ==="") {
+                        if (makh === "" || ngaydat === "" || size === "" || tenkh === "" || mabanh === "" || sl === "" || diachi === "" || sdt === "") {
                             alert("Hãy nhập đủ dữ liệu");
                             return false;
                         }
@@ -428,7 +424,7 @@
                                 tenkh: tenkh,
                                 sl: sl,
                                 diachi: diachi,
-                                sdt:sdt
+                                sdt: sdt
                             }
                             $.post(api, data_gui_di, function (data) {
                                 console.log(data_gui_di);
@@ -486,7 +482,7 @@
                                 for (var ct of json.data) {
                                     $.confirm({
                                         title: `Công thức của ${ct.tenbanh}`,
-                                        content: noidung+=`<p>${ct.congthuc}</p>`,
+                                        content: noidung += `<p>${ct.congthuc}</p>`,
                                         buttons: {
                                             close: {
                                                 btnClass: 'btn-red any-other-class'
@@ -494,8 +490,8 @@
                                         }
                                     });
                                 }
-                                
-                                
+
+
                             } else {
                                 alert("Không có dữ liệu");
                             }
@@ -509,11 +505,11 @@
     function doanhthu() {
         $.confirm({
             title: `Xem doanh thu`,
-            content: ''+
-            '<label>Bạn muốn xem khoảng thời gian nào ?</label><br>' +
+            content: '' +
+                '<label>Bạn muốn xem khoảng thời gian nào ?</label><br>' +
                 '<label>Từ khoảng:</label>' + '<input style = "margin-top:10p   x; margin-left:10px" id = "ngay-vao" type="date" name="datePicker"><br>' +
-                '<label>Đến:</label>' +'<input style = "margin-top:10px; margin-left:56px" id = "ngay-ra" type="date" name="datePicker"><br>'+
-            '<div id="dt-thang">Loading......</div>',
+                '<label>Đến:</label>' + '<input style = "margin-top:10px; margin-left:56px" id = "ngay-ra" type="date" name="datePicker"><br>' +
+                '<div id="dt-thang">Loading......</div>',
             columnClass: 'col-md-12',
             type: 'green',
             typeAnimated: true,
@@ -569,8 +565,8 @@
                                 $('#dt-thang').html(noidung);
                             });
                         }
-                        
-                        
+
+
                         return false;
                     }
                 },
@@ -579,7 +575,7 @@
                 }
             },
             onContentReady: function () {
-                
+
             }
         });
     }
@@ -595,7 +591,7 @@
         else if (checkAccess(quyen) == 2) {
             them_don();
         }
-        
+
     });
 
     $('#xem-don').click(function () {
@@ -608,11 +604,11 @@
         else if (checkAccess(quyen) == 2) {
             list_don();
         }
-        
+
     });
 
     $('#don-da-xoa').click(function () {
-        
+
         if (checkAccess(quyen) == 1) {
             dondaxoa();
         }
@@ -633,7 +629,7 @@
         else if (checkAccess(quyen) == 2) {
             congthuc();
         }
-        
+
     });
 })
 

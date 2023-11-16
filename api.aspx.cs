@@ -21,10 +21,12 @@ namespace doan
                 case "don_da_xoa":
                 case "them_don_hang":
                 case "cong_thuc":
-                    cmd.Parameters.Add("@makh", SqlDbType.NVarChar, 255).Value = Request["makh"];
+                case "edit_don_hang":
+                case "xoa_don_hang":
                     cmd.Parameters.Add("@congthuc", SqlDbType.NVarChar, -1).Value = Request["congthuc"];
                     cmd.Parameters.Add("@ngaydat", SqlDbType.Date).Value = Request["ngaydat"];
                     cmd.Parameters.Add("@mabanh", SqlDbType.NVarChar, 10).Value = Request["mabanh"];
+                    cmd.Parameters.Add("@makh", SqlDbType.NVarChar, 255).Value = Request["makh"];
                     cmd.Parameters.Add("@size", SqlDbType.NVarChar, 10).Value = Request["size"];
                     cmd.Parameters.Add("@tenkh", SqlDbType.NVarChar, 255).Value = Request["tenkh"];
                     cmd.Parameters.Add("@tenbanh", SqlDbType.NVarChar, 255).Value = Request["tenbanh"];
@@ -34,17 +36,18 @@ namespace doan
                     cmd.Parameters.Add("@diachi", SqlDbType.NVarChar, 255).Value = Request["diachi"];
                     cmd.Parameters.Add("@sdt", SqlDbType.NVarChar, 255).Value = Request["sdt"];
                     cmd.Parameters.Add("@delat", SqlDbType.Date).Value = Request["delat"];
+                    cmd.Parameters.Add("@madon", SqlDbType.Int).Value = Request["madon"];
                     break;
             }
             switch (action)
             {
-                case "edit_don_hang":
-                case "xoa_don_hang":
+                
+                
                 case "doanh_thu":
                     cmd.Parameters.Add("@thiethai", SqlDbType.Int).Value = Request["thiethai"];
                     cmd.Parameters.Add("@ngayvao", SqlDbType.Date).Value = Request["ngayvao"];
                     cmd.Parameters.Add("@ngayra", SqlDbType.Date).Value = Request["ngayra"];
-                    cmd.Parameters.Add("@madon", SqlDbType.Int).Value = Request["madon"];
+                    
                     break;
                 
             }

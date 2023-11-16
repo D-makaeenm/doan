@@ -2162,7 +2162,6 @@
     <Content Include="fontawesome-free-6.4.2-web\svgs\solid\yen-sign.svg" />
     <Content Include="fontawesome-free-6.4.2-web\svgs\solid\yin-yang.svg" />
     <Content Include="fontawesome-free-6.4.2-web\svgs\solid\z.svg" />
-    <Content Include="HtmlPage1.html" />
     <Content Include="HtmlPage2.html" />
     <Content Include="log2.png" />
     <Content Include="pizzapng.png" />

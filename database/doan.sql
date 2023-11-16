@@ -65,6 +65,13 @@ create table banh
 )
 
 
+
+
+drop table slban
+drop table donhang
+drop table khachhang
+drop table thiethai
+
 create table slban --thằng này chiếu đến donhang qua mã đơn -> thằng này phải có khóa riêng và 1 thuộc tính của thằng cha
 (
 	[Mã chi tiết] nchar(10),
@@ -75,11 +82,6 @@ create table slban --thằng này chiếu đến donhang qua mã đơn -> thằn
 	constraint FK_slban_donhang foreign key ([Mã đơn]) REFERENCES donhang([Mã đơn]),
 	constraint FK_slban_banh foreign key ([Mã chi tiết]) REFERENCES banh([Mã chi tiết])
 )
-
-drop table slban
-drop table donhang
-drop table khachhang
-drop table doanhthu
 
 create table donhang
 (
@@ -127,3 +129,4 @@ create table congthuc
 	[Tên bánh] nvarchar(50),
 	[Công thức] nvarchar(max)
 )
+
