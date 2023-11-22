@@ -5,6 +5,17 @@
     let dalogin = false;
     let quyen = 0;
 
+    function load_gui(dalogin) {
+        if (dalogin == true) {
+            $('#xem-don').show();
+            $('#tong-thu-chi').show();
+            $('#them-don').show();
+            $('#don-da-xoa').show();
+            $('#cong-thuc').show();
+            $('#div-kh').hide();
+        }
+    }
+
     function dologin() {
         $.confirm({
             title: "Đăng nhập",
@@ -53,12 +64,14 @@
                                             $('#btn-login').hide();
                                             $('#hello').show();
                                             $('#btn-logout').show();
+                                            load_gui(dalogin);
                                         }
                                         else if (dalogin) {
                                             $.alert("Đăng nhập thành công!");
                                             $('#btn-login').hide();
                                             $('#hello1').show();
                                             $('#btn-logout').show();
+                                            load_gui(dalogin);
                                         }
                                         else {
                                             $.alert("Sai tài khoản hoặc mật khẩu!");
@@ -88,6 +101,9 @@
         window.location.href = window.location.origin + window.location.pathname;
     }
 
+    $('#logo-click').click(function () {
+        window.location.href = window.location.origin + window.location.pathname;
+    });
 
     function checkAccess(quyen) {
         if (!dalogin) {
@@ -112,8 +128,6 @@
             alert("Bạn không đủ quyền để thực hiện ")
         }
     });
-
-
 
     $('#btn-login').click(function () {
         dologin();
@@ -232,6 +246,7 @@
             type: 'orange',
             typeAnimated: true,
             content: `` +
+                '<label>Mã khách hàng</label>' + '<input class="name form-control" id="edit-makh">'+
                 '<label>Tên khách hàng:</label>' + '<input class="name form-control" id="edit-tenkh">' +
                 '<label>Địa chỉ:</label>' + '<input class="name form-control" id="edit-diachi">' +
                 '<label>SDT</label>' + '<input class="name form-control" id="edit-sdt">' +
@@ -261,6 +276,7 @@
                             mabanh: $('#edit-mabanh').val(),
                             size: $('#edit-size').val(),
                             sl: $('#edit-sl').val(),
+                            makh: makh,
                             madon: madon
                         }
                          console.log(data_gui_di)
@@ -376,6 +392,41 @@
 
 
     //---------------------------------------------------------------
+    $('#kh-them-don').click(function () {
+        kh_dat_don();
+    });
+    function kh_dat_don() {
+        var dialog_add = $.confirm({
+            title: `Đặt hàng`,
+            type: 'green',
+            typeAnimated: true,
+            content: '' + '<label>Hãy chọn vị trí của bạn</label><br>' +
+                '<button class="btn btn-primary my-2 rounded-pill" id="xem-map">Xem map</button>' +
+                '<div id="map"></div> ',
+            buttons: {
+                ok: {
+                    text: 'Đặt hàng',
+                    btnClass: 'btn-green any-other-class'
+                },
+                close: {
+                    btnClass: 'btn-red any-other-class'
+                }
+            },
+            onOpenBefore: function () {
+                // Gán sự kiện click cho nút "Xem map"
+                $('#xem-map').on('click', function () {
+                    $('#map').html(`
+                    <div class="google-map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d1560.2498949215549!2d105.84614115410433!3d21.549961620519024!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1700651842354!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    `);
+                });
+            }
+        });
+    }
+
+
+    //--------------------------------------------------------------
 
     function them_don() {
         var dialog_add = $.confirm({

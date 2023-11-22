@@ -9,6 +9,8 @@
     <link href="asset/jquery-confirm.min.css" rel="stylesheet" />
     <link href="asset/bootstrap.min.css" rel="stylesheet" />
     <script src="asset/bootstrap.min.js"></script>
+    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA90Ev-WhB_Fa2Vgdj4Dv6ZBRmAIjvjaew&libraries=places&callback=initMap"
+            async defer></script>-->
     <script src="asset/Codejs.js"></script>
     <link href="asset/style.css" rel="stylesheet" />
     <link href="fontawesome-free-6.4.2-web/css/all.css" rel="stylesheet" />
@@ -18,7 +20,7 @@
     <!-- đây là khu vực thanh navbar -->
     <nav class="navbar navbar-expand-lg custom-navbar" style="background-color:#e6c477">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" id="logo-click" href="#">
                 <img src="pizzapng.png" alt="Logo" width="60" height="60" class="d-inline-block align-content-between" />
                 <b>PIZZAHUT</b>
             </a>
@@ -28,12 +30,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav" style="float:left">
                     <li class="nav-item">
-                        <button class="btn btn-primary" style="margin-right: 10px" id="xem-don">
+                        <button class="btn btn-primary" style="margin-right: 10px; display:none" id="xem-don">
                             <i class="fa-solid fa-list"></i> Xem đơn hàng
                         </button>
                     </li>
-                    <li class="nav-item" id="tong-thu-chi">
-                        <button class="btn btn-primary" style="background-color:deeppink">
+                    <li class="nav-item" >
+                        <button class="btn btn-primary" style="background-color:deeppink; display:none" id="tong-thu-chi">
                             <i class="fa-solid fa-calculator"></i> Tổng thu chi
                         </button>
                     </li>
@@ -71,14 +73,18 @@
     <div class="container-fluid" style="margin-right:30px">
         <div class="row g-0 text-center">
             <div class="col-sm-3">
-
-                <div class="btn-group-vertical" style="width:80%; float:left" role="group" aria-label="Vertical button group">
-                    <button type="button" style="background-color:forestgreen" id="them-don" class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-plus"></i> Nhập đơn mới</button>
-                    <button type="button" style="background-color: orangered" id="don-da-xoa" class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-x"></i> Đơn đã xóa</button>
-                    <button type="button" style="background-color: orange" id="cong-thuc" class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-pizza-slice"></i> Công thức</button>
-
+                <div id="div-kh">
+                    <h3 style="margin-top:40px">Bánh trông rất ngon ? Đặt hàng đi bạn</h3>
+                    <div class="btn-group-vertical" style="width:80%" role="group" aria-label="Vertical button group">
+                        <button type="button" style="background-color:forestgreen" id="kh-them-don" class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-plus"></i> Đặt đơn thôi</button>
+                    </div>
+                    <!--<iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d1855.460235613501!2d105.84607884873914!3d21.549964795865307!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1700651314382!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>-->
                 </div>
-
+                <div class="btn-group-vertical" style="width:80%; float:left" role="group" aria-label="Vertical button group">
+                    <button type="button" style="background-color:forestgreen;display:none" id="them-don" class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-plus"></i> Nhập đơn mới</button>
+                    <button type="button" style="background-color: orangered; display: none" id="don-da-xoa" class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-x"></i> Đơn đã xóa</button>
+                    <button type="button" style="background-color: orange; display: none" id="cong-thuc" class="btn btn-primary my-2 rounded-pill custom-large-button"><i class="fa-solid fa-pizza-slice"></i> Công thức</button>
+                </div>
             </div>
 
             <div class="col-sm-9 text-center">
@@ -389,24 +395,29 @@
             </div>
         </div>
 
-        <div class="MuiGrid-root jss92 MuiGrid-container MuiGrid-spacing-xs-3">
-            <div class="MuiGrid-root jss86 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-10">
-                <div class="jss90">
-                    <p class="jss94">Công ty TNHH Pizza Việt Nam</p>
-                    <p class="jss95">Số ĐKKD: 0303902751</p>
-                </div>
-                <div class="jss91">
-                    Tầng 10, Tòa nhà Opal Office, số 92 Nguyễn Hữu Cảnh, Phường 22, Quận Bình Thạnh, TP.HCM, Việt Nam.
-                </div>
-            </div>
-            <div class="MuiGrid-root jss87 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-2">
-                <div class="jss100">
-                    <a class="jss83" href="/info?TNC">
-                        <p class="jss102">Điều khoản &amp; Điều kiện</p>
-                    </a>
-                    <a href="http://online.gov.vn/Home/WebDetails/16305?AspxAutoDetectCookieSupport=1" target="_blank">
-                        <img class="jss88" src="https://cdn.pizzahut.vn/images/Web_V3/Homepage/thongbaobocongthuong.png" alt="">
-                    </a>
+        <div>
+            <div>
+                <div class="container-map">
+                    <div class="row">
+                        <div class="col">
+                            <div class="chu-logo" style="margin-left:20px;">
+                                <p>Công ty TNHH Pizza Việt Nam</p>
+                                <p>Số ĐKKD: 0303902751</p>
+                                <p>1101, Phường Phú Xá, TP.Thái Nguyên, Việt Nam.</p>
+                                <a href="/info?TNC">
+                                    <p>Điều khoản &amp; Điều kiện</p>
+                                </a>
+                                <a href="http://online.gov.vn/Home/WebDetails/16305?AspxAutoDetectCookieSupport=1" target="_blank">
+                                    <img src="https://cdn.pizzahut.vn/images/Web_V3/Homepage/thongbaobocongthuong.png" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="google-map" style="margin-top:10px;float:right ;padding-right:150px">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d1560.2498949215549!2d105.84614115410433!3d21.549961620519024!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1700651842354!5m2!1svi!2s" width="200" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
