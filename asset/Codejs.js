@@ -5,16 +5,25 @@
     let dalogin = false;
     let quyen = 0;
 
-    function load_gui(dalogin) {
-        if (dalogin == true) {
+    function load_gui(dalogin, quyen) {
+        if (dalogin == true && quyen == 1 || dalogin == true && quyen == 2) {
             $('#xem-don').show();
             $('#tong-thu-chi').show();
             $('#them-don').show();
             $('#don-da-xoa').show();
-            $('#cong-thuc').show();
+            $('#don-da-done').show();
             $('#div-kh').hide();
+            $('#xem-don-nhap').show();
         }
-    }
+        else if (dalogin == true && quyen == 3) {
+            $('#xem-don').hide();
+            $('#tong-thu-chi').hide();
+            $('#them-don').hide();
+            $('#don-da-xoa').hide();
+            $('#div-kh').hide();
+            $('#xem-don-nhap').show();
+        }
+    } //giao dien khi dang nhap voi cac quyen
 
     function dologin() {
         $.confirm({
@@ -58,20 +67,32 @@
                                                 quyen = 2;
                                                 break;
                                             }
+                                            else if (tt.tk == tkb && tt.mk == mkb && tt.roles == 3) {
+                                                dalogin = true;
+                                                quyen = 3;
+                                                break;
+                                            }
                                         }
                                         if (quyen == 1) {
                                             $.alert("Đăng nhập thành công!");
                                             $('#btn-login').hide();
                                             $('#hello').show();
                                             $('#btn-logout').show();
-                                            load_gui(dalogin);
+                                            load_gui(dalogin,quyen);
                                         }
-                                        else if (dalogin) {
+                                        else if (quyen == 2) {
                                             $.alert("Đăng nhập thành công!");
                                             $('#btn-login').hide();
                                             $('#hello1').show();
                                             $('#btn-logout').show();
-                                            load_gui(dalogin);
+                                            load_gui(dalogin, quyen);
+                                        }
+                                        else if (quyen == 3) {
+                                            $.alert("Đăng nhập thành công!");
+                                            $('#btn-login').hide();
+                                            $('#hello2').show();
+                                            $('#btn-logout').show();
+                                            load_gui(dalogin, quyen);
                                         }
                                         else {
                                             $.alert("Sai tài khoản hoặc mật khẩu!");
@@ -91,19 +112,15 @@
 
             }
         })
-    }
+    }  //login
 
     $('#btn-logout').click(function () {
         logout();
-    });
+    }); //logout
 
     function logout() {
         window.location.href = window.location.origin + window.location.pathname;
-    }
-
-    $('#logo-click').click(function () {
-        window.location.href = window.location.origin + window.location.pathname;
-    });
+    } //reload page while logout
 
     function checkAccess(quyen) {
         if (!dalogin) {
@@ -115,7 +132,10 @@
         else if (quyen == 2) {
             return 2;
         }
-    }
+        else if (quyen == 3) {
+            return 3;
+        }
+    } //check roles
 
     $('#tong-thu-chi').click(function () {
         if (checkAccess(quyen) == 1) {
@@ -127,16 +147,72 @@
         else if (checkAccess(quyen) == 2) {
             alert("Bạn không đủ quyền để thực hiện ")
         }
-    });
+        else if (checkAccess(quyen) == 3) {
+            alert("Bạn không đủ quyền để thực hiện ")
+        }
+    }); //roles
 
     $('#btn-login').click(function () {
         dologin();
-    });
+    }); //login
+
+    function dondaxoa() {
+        $.confirm({
+            title: "Danh sách đơn hàng đã xóa",
+            content: `<div id="ds_xoa">Loading......</div>`,
+            columnClass: 'col-md-12',
+            type: 'green',
+            typeAnimated: true,
+            onContentReady: function () {
+                donxoa();
+            }
+        });
+    }
+
+    function donxoa() {
+        $.post(api, { action: 'don_da_xoa' },
+            function (data) {
+                var json = JSON.parse(data);
+                var noidung = "";
+                if (json.ok) {
+                    noidung += `<table class="table table-hover">`;
+                    noidung += `<thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã đơn</th>
+                        <th>Mã khách hàng</th>
+                        <th>Tên khách hàng</th>
+                        <th>Ngày xóa</th>
+                    </tr>
+                    </thead><tbody>`;
+                    var stt = 0;
+                    for (var dh of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
+                        noidung += `
+                        <tr>
+                            <td>${++stt}</td>
+                            <td>${dh.madon}</td>
+                            <td>${dh.makh}</td>
+                            <td>${dh.tenkh}</td>
+                            <td>${dh.delat}</td>
+                        </tr>`;
+                    }
+                    noidung += "</tbody></table>"
+                }
+                else {
+                    noidung = " khong co du lieu";
+                }
+                $('#ds_xoa').html(noidung);
+            }
+        )
+    }
 
     function list_don() {
         $.confirm({
             title: "Danh sách đơn hàng",
-            content: `<div id="ds_don_hang">Loading......</div>`,
+            content: '' + 
+            //'<label>Tìm kiếm</label>' + '<input type="text" placehoder = "Tên khách hàng" id="nhap-ten">' +
+            //'<button style="margin-left:10px" id="loc-ten">Lọc</button>' +
+            '<div id="ds_don_hang">Loading......</div>',
             columnClass: 'col-md-12',
             type: 'green',
             typeAnimated: true,
@@ -157,6 +233,15 @@
                         return false;
                     }
                 },
+                xemdondone: {
+                    text: "Xem đơn đã done",
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        dondadone();
+                        return false;
+                    }
+                }
+                ,
                 Close: {
                     btnClass: 'btn-red any-other-class'
                 }
@@ -191,9 +276,9 @@
                     </thead><tbody>`;
                     var stt = 0;
                     for (var dh of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
-                        var tongtien = dh.giatien * dh.sl;
                         var sua_xoa = `<button class="btn btn-sm btn-warning nut-sua-xoa" data-idd="${dh.madon}" data-action="edit_don_hang">Sửa</button>`;
                         sua_xoa += ` <button class="btn btn-sm btn-danger nut-sua-xoa" data-idd="${dh.madon}" data-action="xoa_don_hang">Xóa</button>`;
+                        sua_xoa += ` <button class="btn btn-sm btn-success nut-sua-xoa" data-idd="${dh.madon}" data-action="done_don_hang">Hoàn thành</button>`;
                         noidung += `
                         <tr>
                             <td>${++stt}</td>
@@ -203,8 +288,8 @@
                             <td>${dh.tenbanh}</td>
                             <td>${dh.size}</td>
                             <td>${dh.sl}</td>
-                            <td>${dh.giatien}</td>
-                            <td>${tongtien}</td>
+                            <td>${dh.giaban}</td>
+                            <td>${dh.tongtien}</td>
                             <td>${dh.ngaydat}</td>
                             <td>${sua_xoa}</td>
                         </tr>`;
@@ -212,7 +297,7 @@
                     noidung += "</tbody></table>"
                 }
                 else {
-                    noidung = " khong co du lieu";
+                    noidung = "khong co du lieu";
                 }
                 $('#ds_don_hang').html(noidung);
                 $('.nut-sua-xoa').click(function () {
@@ -226,12 +311,102 @@
                             //ko can xac nhan
                             sua_don(madon, json);
                         }
+                        else if (action == 'done_don_hang') {
+                            done_don(madon, json);
+                        }
                     }
                 });
             }
         )
     }
 
+    function done_don(madon, json) {
+        var don;
+        for (var obj of json.data) {
+            if (obj.madon == madon) {
+                don = obj;
+                break;
+            }
+        }
+        var dialog_done = $.confirm({
+            title: `Xác nhận hoàn thành đơn ${don.madon}`,
+            content: `Are you sure ?`,
+            buttons: {
+                YES: {
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        var data_gui_di = {
+                            action: 'done_don_hang',
+                            madon: madon,
+                        }
+                        $.post(api, data_gui_di, function (data) {
+                            var json = JSON.parse(data);
+                            if (json.ok) {
+                                dialog_done.close();
+                                capnhatdonhang();
+                            } else {
+                                alert(json.msg)
+                            }
+                        })
+                    }
+                },
+                NO: {
+                    btnClass: 'btn-red any-other-class',
+                }
+            }
+        });
+
+    }
+
+    function dondadone() {
+        $.confirm({
+            title: "Danh sách đơn hàng đã hoàn thành",
+            content: `<div id="ds_xoa">Loading......</div>`,
+            columnClass: 'col-md-12',
+            type: 'green',
+            typeAnimated: true,
+            onContentReady: function () {
+                dondone();
+            }
+        });
+    }
+
+    function dondone() {
+        $.post(api, { action: 'don_da_done' },
+            function (data) {
+                var json = JSON.parse(data);
+                var noidung = "";
+                if (json.ok) {
+                    noidung += `<table class="table table-hover">`;
+                    noidung += `<thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã đơn</th>
+                        <th>Mã khách hàng</th>
+                        <th>Tên khách hàng</th>
+                        <th>Ngày hoàn thành</th>
+                    </tr>
+                    </thead><tbody>`;
+                    var stt = 0;
+                    for (var dh of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
+                        noidung += `
+                        <tr>
+                            <td>${++stt}</td>
+                            <td>${dh.madon}</td>
+                            <td>${dh.makh}</td>
+                            <td>${dh.tenkh}</td>
+                            <td>${dh.doneat}</td>
+                        </tr>`;
+                    }
+                    noidung += "</tbody></table>"
+                }
+                else {
+                    noidung = " khong co du lieu";
+                }
+                $('#ds_xoa').html(noidung);
+            }
+        )
+    }
 
     function sua_don(madon, json) {
         var don;
@@ -246,13 +421,18 @@
             type: 'orange',
             typeAnimated: true,
             content: `` +
-                '<label>Mã khách hàng</label>' + '<input class="name form-control" id="edit-makh">'+
                 '<label>Tên khách hàng:</label>' + '<input class="name form-control" id="edit-tenkh">' +
-                '<label>Địa chỉ:</label>' + '<input class="name form-control" id="edit-diachi">' +
+                '<label>Địa chỉ:</label>' + '<input class="name form-control" id="edit-dia-chi">' +
                 '<label>SDT</label>' + '<input class="name form-control" id="edit-sdt">' +
+                `<select name="tenbanh" style = "margin-top:10px" id= "edit-ten-banh">
+                <option value="Pizza Margherita">Pizza Margherita</option>
+                <option value="Pizza thập cẩm">Pizza thập cẩm</option>
+                <option value="Pizza bò">Pizza bò bằm</option>
+                <option value="Pizza biển khơi">Pizza hải sản</option>
+                <option value="Pizza Hawaii">Pizza Hawaii</option>
+                <option value="Pizza phô mai">Pizza phô mai</option>
+                </select><br>` +
                 '<label style = "margin-top:10px"> Ngày đặt:</label>' + '<input style = "margin-top:10px" id = "edit-ngaydat" type="date" name="datePicker"><br>' +
-                '<label style = "margin-top:10px">Mã bánh:</label>' +
-                '<select name="mabanh" style = "margin-top:10px" id= "edit-mabanh"><option value="pz-01">pz-01</option><option value="pz-02">pz-02</option><option value="pz-03">pz-03</option><option value="pz-04">pz-04</option><option value="pz-05">pz-05</option><option value="pz-06">pz-06</option></select><br>' +
                 `<label style = "margin-top:10px">Size:</label>` +
                 `<select style = "margin-left:35px" name="size" id="edit-size">
                     <option value="S">S</option>
@@ -261,25 +441,21 @@
                 </select><br>`+
                 `<label style = "margin-top:10px">Số lượng:</label>` + '<input style = "margin-top:10px" id="edit-sl"><br>'
             ,
-
             buttons: {
                 save: {
                     btnClass: 'btn-green any-other-class',
                     action: function () {
-                        var makh = $('#edit-makh').val();
                         var data_gui_di = {
                             action: 'edit_don_hang',
                             tenkh: $('#edit-tenkh').val(),
-                            diachi: $('#edit-diachi').val(),
+                            diachi: $('#edit-dia-chi').val(),
                             sdt: $('#edit-sdt').val(),
+                            tenbanh: $('#edit-ten-banh').val(),
                             ngaydat: $('#edit-ngaydat').val(),
-                            mabanh: $('#edit-mabanh').val(),
                             size: $('#edit-size').val(),
                             sl: $('#edit-sl').val(),
-                            makh: makh,
                             madon: madon
                         }
-                         console.log(data_gui_di)
                         $.post(api, data_gui_di, function (data) {
                             var json = JSON.parse(data);
 
@@ -340,218 +516,97 @@
 
     //--------------------------------------------------------------
 
-    function test() {
-        $.post(api, { action: 'don_da_xoa' },
-            function (data) {
-                var json = JSON.parse(data);
-                var noidung = "";
-                if (json.ok) {
-                    noidung += `<table class="table table-hover">`;
-                    noidung += `<thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Mã đơn</th>
-                        <th>Mã khách hàng</th>
-                        <th>Ngày xóa</th>
-                    </tr>
-                    </thead><tbody>`;
-                    var stt = 0;
-                    for (var dh of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
-                        noidung += `
-                        <tr>
-                            <td>${++stt}</td>
-                            <td>${dh.madon}</td>
-                            <td>${dh.makh}</td>
-                            <td>${dh.delat}</td>
-                        </tr>`;
-                    }
-                    noidung += "</tbody></table>"
-                }
-                else {
-                    noidung = " khong co du lieu";
-                }
-                $('#ds_xoa').html(noidung);
-            }
-        )
-    }
-
-    function dondaxoa() {
-        $.confirm({
-            title: "Danh sách đơn hàng đã xóa",
-            content: `<div id="ds_xoa">Loading......</div>`,
-            columnClass: 'col-md-12',
-            type: 'green',
-            typeAnimated: true,
-            onContentReady: function () {
-                test();
-            }
-        });
-    }
-
-
-
-
     //---------------------------------------------------------------
     $('#kh-them-don').click(function () {
-        kh_dat_don();
+        them_don();
     });
-    function kh_dat_don() {
-        var dialog_add = $.confirm({
-            title: `Đặt hàng`,
-            type: 'green',
-            typeAnimated: true,
-            content: '' + '<label>Hãy chọn vị trí của bạn</label><br>' +
-                '<button class="btn btn-primary my-2 rounded-pill" id="xem-map">Xem map</button>' +
-                '<div id="map"></div> ',
-            buttons: {
-                ok: {
-                    text: 'Đặt hàng',
-                    btnClass: 'btn-green any-other-class'
-                },
-                close: {
-                    btnClass: 'btn-red any-other-class'
-                }
-            },
-            onOpenBefore: function () {
-                // Gán sự kiện click cho nút "Xem map"
-                $('#xem-map').on('click', function () {
-                    $('#map').html(`
-                    <div class="google-map">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d1560.2498949215549!2d105.84614115410433!3d21.549961620519024!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1700651842354!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                    `);
-                });
-            }
-        });
-    }
+
 
 
     //--------------------------------------------------------------
+    function checkdau(inputchuoi) {
+        var diacriticRegex = /[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệđìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/;
+        return diacriticRegex.test(inputchuoi);
+    }
 
     function them_don() {
-        var dialog_add = $.confirm({
-            title: `Thêm mới đơn hàng`,
-            type: 'green',
-            typeAnimated: true,
-            content: '' +
-                '<label>Mã khách hàng:</label>' + '<input type="text" placeholder="không được trùng mã kh đã có" class="name form-control" id="nhap-makh" >' +
-                '<label>Tên khách hàng:</label>' + '<input class="name form-control" id="ten-kh">' +
-                '<label>Địa chỉ:</label>' + '<input class="name form-control" id="dia-chi">' +
-                '<label>SDT</label>' + '<input class="name form-control" id="sdt">' +
-                '<label style = "margin-top:10px"> Ngày đặt:</label>' + '<input style = "margin-top:10px" id = "ngay-dat" type="date" name="datePicker"><br>' +
-                '<label style = "margin-top:10px">Mã bánh:</label>' +
-                '<select name="mabanh" style = "margin-top:10px" id= "ma-banh"><option value="pz-01">pz-01</option><option value="pz-02">pz-02</option><option value="pz-03">pz-03</option><option value="pz-04">pz-04</option><option value="pz-05">pz-05</option><option value="pz-06">pz-06</option></select><br>' +
-                `<label style = "margin-top:10px">Size:</label>` +
-                `<select style = "margin-left:35px" name="size" id="size">
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                </select><br>`+
-                `<label style = "margin-top:10px">Số lượng:</label>` + '<input style = "margin-top:10px" id="sl"><br>',
-            buttons: {
-                save: {
-                    text: `Thêm đơn hàng vào database`,
-                    btnClass: 'btn-green any-other-class',
-                    action: function () {
-                        var makh = $('#nhap-makh').val();
+	    var dialog_add = $.confirm({
+		    title: `Thêm mới đơn hàng`,
+		    type: 'green',
+		    typeAnimated: true,
+		    content: '' +
+			    '<label>Tên khách hàng:</label>' + '<input class="name form-control" placeholder="Vui lòng viết có dấu" id="ten-kh">' +
+			    '<label>Địa chỉ:</label>' + '<input class="name form-control" id="dia-chi">' +
+			    '<label>SDT</label>' + '<input class="name form-control" id="sdt">' +
+			    '<label style = "margin-top:10px"> Ngày đặt:</label>' + '<input style = "margin-top:10px" id = "ngay-dat" type="date" name="datePicker"><br>' +
+                '<label style = "margin-top:10px">Tên bánh:</label>' +
+                `<select name="tenbanh" style = "margin-top:10px" id= "ten-banh">
+                <option value="Pizza Margherita">Pizza Margherita</option>
+                <option value="Pizza thập cẩm">Pizza thập cẩm</option>
+                <option value="Pizza bò">Pizza bò bằm</option>
+                <option value="Pizza biển khơi">Pizza hải sản</option>
+                <option value="Pizza Hawaii">Pizza Hawaii</option>
+                <option value="Pizza phô mai">Pizza phô mai</option>
+                </select><br>` +
+			    `<label style = "margin-top:10px">Size:</label>` +
+			    `<select style = "margin-left:35px" name="size" id="size">
+				    <option value="S">S</option>
+				    <option value="M">M</option>
+				    <option value="L">L</option>
+			    </select><br>`+
+			    `<label style = "margin-top:10px">Số lượng:</label>` + '<input style = "margin-top:10px" id="sl"><br>',
+		    buttons: {
+			    save: {
+				    text: `Thêm đơn hàng vào database`,
+				    btnClass: 'btn-green any-other-class',
+				    action: function () {
                         var tenkh = $('#ten-kh').val();
-                        var ngaydat = $('#ngay-dat').val();
-                        var mabanh = $('#ma-banh').val();
-                        var size = $('#size').val();
-                        var sl = $('#sl').val();
                         var diachi = $('#dia-chi').val();
                         var sdt = $('#sdt').val();
-                        if (makh === "" || ngaydat === "" || size === "" || tenkh === "" || mabanh === "" || sl === "" || diachi === "" || sdt === "") {
-                            alert("Hãy nhập đủ dữ liệu");
-                            return false;
+					    var ngaydat = $('#ngay-dat').val();
+                        var tenbanh = $('#ten-banh').val();
+					    var size = $('#size').val();
+					    var sl = $('#sl').val();
+                        if (checkdau(tenkh)== false) {
+                            alert("xin điền đủ họ tên")
                         }
-                        else {
-                            var data_gui_di = {
-                                action: 'them_don_hang',
-                                makh: makh,
-                                ngaydat: ngaydat,
-                                mabanh: mabanh,
-                                size: size,
+                        if (tenkh === "" || ngaydat === "" || size === "" || tenbanh === "" || sl === "" || diachi === "" || sdt === "") {
+						    alert("Hãy nhập đủ dữ liệu");
+						    return false;
+					    }
+					    else {
+						    var data_gui_di = {
+							    action: 'them_don_hang',
                                 tenkh: tenkh,
-                                sl: sl,
-                                diachi: diachi,
-                                sdt: sdt
-                            }
-                            $.post(api, data_gui_di, function (data) {
-                                console.log(data_gui_di);
-                                var json = JSON.parse(data);
-                                alert("da gui thanh cong");
-                                if (json.ok) {
-                                    dialog_add.close();
-                                    capnhatdonhang();
-                                }
-                                else {
-                                    alert(json.msg);
-                                }
-                            });
-                        }
-                    }
-                },
-                close: {
-                    btnClass: 'btn-red any-other-class'
-                }
-            }
-        });
+							    ngaydat: ngaydat,
+                                tenbanh: tenbanh,
+							    size: size,
+							    sl: sl,
+							    diachi: diachi,
+							    sdt: sdt
+						    }
+						    $.post(api, data_gui_di, function (data) {
+							    console.log(data_gui_di);
+							    var json = JSON.parse(data);
+							    alert("da gui thanh cong");
+							    if (json.ok) {
+								    dialog_add.close();
+								    capnhatdonhang();
+							    }
+							    else {
+								    alert(json.msg);
+							    }
+						    });
+					    }
+				    }
+			    },
+			    close: {
+				    btnClass: 'btn-red any-other-class'
+			    }
+		    }
+	    });
     }
 
-
-    function congthuc() {
-        var selectedId;
-        var dialog_ct = $.confirm({
-            title: `Công thức làm bánh `,
-            content: '' + '<label>Bạn muốn xem công thức nào?</label><br>' +
-                `<select name="congthuc" id="ct">
-                <option value="pz-03">Pizza bò bằm</option>
-                <option value="pz-05">Pizza Hawaii</option>
-                <option value="pz-04">Pizza hải sản</option>
-                <option value="pz-01">Pizza Margherita</option>
-                <option value="pz-06">Pizza phô mai</option>
-                <option value="pz-02">Pizza thập cẩm</option>
-            </select><br>`+
-                '<button class="btn-success any-other-class">Xem</button>',
-            buttons: {
-                close: {
-                    btnClass: 'btn-red any-other-class'
-                }
-            },
-            onContentReady: function () {
-                $('#ct').on('change', function () {
-                    selectedId = $(this).val();
-                });
-
-                $('.btn-success').on('click', function () {
-                    if (selectedId) {
-                        $.post(api, { action: 'cong_thuc', mabanh: selectedId }, function (data) {
-                            var json = JSON.parse(data);
-                            if (json.ok) {
-                                var noidung = "";
-                                for (var ct of json.data) {
-                                    $.confirm({
-                                        title: `Công thức của ${ct.tenbanh}`,
-                                        content: noidung += `<p>${ct.congthuc}</p>`,
-                                        buttons: {
-                                            close: {
-                                                btnClass: 'btn-red any-other-class'
-                                            }
-                                        }
-                                    });
-                                }
-
-
-                            } else {
-                                alert("Không có dữ liệu");
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }
 
     function doanhthu() {
         $.confirm({
@@ -599,7 +654,7 @@
                                     var tienchi = 0;
                                     for (var dh of json.data) {
                                         tienthu += parseInt(dh.tongtien);
-                                        tienchi += parseInt(dh.thiethai);
+                                        tienchi += parseInt(dh.tienthu);
                                         tongdt = tienthu - tienchi;
                                     }
                                     noidung += `
@@ -632,6 +687,301 @@
     }
 
 
+    function list_don_nhap() {
+        $.confirm({
+            title: "Danh sách đơn nhập",
+            content: '' +
+                '<div id="ds_don_hang_nhap">Loading......</div>',
+            columnClass: 'col-md-12',
+            type: 'green',
+            typeAnimated: true,
+            buttons: {
+                add: {
+                    text: "Thêm đơn",
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        them_don_nhap();
+                        return false;
+                    }
+                },
+                xemdonxoa: {
+                    text: "Xem đơn nhập đã xóa",
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        donnhapdaxoa();
+                        return false;
+                    }
+                },
+                Close: {
+                    btnClass: 'btn-red any-other-class'
+                }
+            },
+
+            onContentReady: function () {
+                capnhatdonnhap();
+            }
+        });
+    }
+
+    function capnhatdonnhap() {
+        $.post(api, { action: 'list_don_nhap' },
+            function (data) {
+                var json = JSON.parse(data);
+                var noidung = "";
+                if (json.ok) {
+                    noidung += `<table class="table table-hover">`;
+                    noidung += `<thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã đơn nhập</th>
+                        <th>Ngày nhập</th>
+                        <th>Mã xưởng</th>
+                        <th>Tên xưởng</th>
+                        <th>Số điện thoại</th>
+                        <th>Tên bánh</th>
+                        <th>Số lượng</th>
+                        <th>Size</th>
+                        <th>Tổng tiền</th>
+                    </tr>
+                    </thead><tbody>`;
+                    var stt = 0;
+                    for (var dhn of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
+                        var sua_xoa = ` <button class="btn btn-sm btn-danger nut-sua-xoa" data-idd="${dhn.madonnhap}" data-action="xoa_don_nhap">Xóa</button>`;
+                        sua_xoa += ` <button class="btn btn-sm btn-success nut-sua-xoa" data-idd="${dhn.madonnhap}" data-action="done_don_nhap">Hoàn thành</button>`;
+                        noidung += `
+                        <tr>
+                            <td>${++stt}</td>
+                            <td>${dhn.madonnhap}</td>
+                            <td>${dhn.ngaynhap}</td>
+                            <td>${dhn.mancc}</td>
+                            <td>${dhn.tenncc}</td>
+                            <td>${dhn.sdtncc}</td>
+                            <td>${dhn.tenbanh}</td>
+                            <td>${dhn.sln}</td>
+                            <td>${dhn.tongtiennhap}</td>
+                            <td>${dhn.size}</td>
+                            <td>${sua_xoa}</td>
+                        </tr>`;
+                    }
+                    noidung += "</tbody></table>"
+                }
+                else {
+                    noidung = "khong co du lieu";
+                }
+                $('#ds_don_hang_nhap').html(noidung);
+                $('.nut-sua-xoa').click(function () {
+                    if (checkAccess(quyen) == 1 || checkAccess(quyen) == 3) {
+                        var action = $(this).data('action')  //lấy action kèm theo
+                        var madonnhap = $(this).data('idd')  //lấy cid kèm theo
+                        if (action == 'xoa_don_nhap') { //dùng action
+                            //can xac nhan
+                            xoa_don_nhap(madonnhap, json);
+                            //dùng id vào đây để hàm này xử, cho khỏi rối code
+                        }
+                        else if (action == 'done_don_nhap') {
+                            alert('Chức năng chưa sãn sàng'); 
+                            /*done_don_nhap(madonnhap, json);*/
+                        }
+                    } else {
+                        alert("Bạn không có đủ quyền để thao tác")
+                        return false;
+                    }
+                });
+            }
+        )
+    }
+
+    function them_don_nhap() {
+        var dialog_add = $.confirm({
+            title: `Thêm mới đơn nhập`,
+            type: 'green',
+            typeAnimated: true,
+            content: '' +
+                '<label>Tên nhà cung cấp:</label>' + '<input class="name form-control" id="ten-ncc">' +
+                '<label>Mã nhà cung cấp</label>' + '<input class="name form-control" id="ma-ncc">' +
+                '<label>SDT</label>' + '<input class="name form-control" id="sdt-ncc">' +
+                '<label style = "margin-top:10px"> Ngày nhập:</label>' + '<input style = "margin-top:10px" id = "ngay-nhap" type="datetime-local" name="datePicker"><br>' +
+                '<label style = "margin-top:10px">Tên bánh:</label>' +
+                `<select name="tenbanh" style = "margin-top:10px" id= "ten-banh">
+                <option value="Pizza Margherita">Pizza Margherita</option>
+                <option value="Pizza thập cẩm">Pizza thập cẩm</option>
+                <option value="Pizza bò">Pizza bò bằm</option>
+                <option value="Pizza biển khơi">Pizza hải sản</option>
+                <option value="Pizza Hawaii">Pizza Hawaii</option>
+                <option value="Pizza phô mai">Pizza phô mai</option>
+                </select><br>` +
+                `<label style = "margin-top:10px">Size:</label>` +
+                `<select style = "margin-left:35px" name="size" id="size">
+				    <option value="S">S</option>
+				    <option value="M">M</option>
+				    <option value="L">L</option>
+			    </select><br>`+
+                `<label style = "margin-top:10px">Số lượng:</label>` + '<input style = "margin-top:10px" id="sln"><br>',
+            buttons: {
+                save: {
+                    text: `Thêm đơn hàng vào database`,
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        $.confirm({
+                            title: `Thông báo`,
+                            content: `Bạn đã kiểm tra kỹ chưa vì không có sửa đâu?`,
+                            buttons: {
+                                ok: {
+                                    text: `Rồi`,
+                                    btnClass: 'btn-green any-other-class'
+                                },
+                                no: {
+                                    btnClass: 'btn-red any-other-class'
+                                }
+                            }
+                        });
+                        var tenncc = $('#ten-ncc').val();
+                        var mancc = $('#ma-ncc').val();
+                        var sdtncc = $('#sdt-ncc').val();
+                        var ngaynhap = $('#ngay-nhap').val();
+                        var tenbanh = $('#ten-banh').val();
+                        var size = $('#size').val();
+                        var sln = $('#sln').val();
+                        if (tenncc === "" || mancc === "" || sdtncc === "" || ngaynhap === "" || tenbanh === "" || size === "" || sln === "") {
+                            alert("Hãy nhập đủ dữ liệu");
+                            return false;
+                        }
+                        else {
+                            var data_gui_di = {
+                                action: 'them_don_nhap',
+                                tenncc: tenncc,
+                                mancc: mancc,
+                                sdtncc: sdtncc,
+                                ngaynhap: ngaynhap,
+                                tenbanh: tenbanh,
+                                size: size,
+                                sln: sln
+                            }
+                            $.post(api, data_gui_di, function (data) {
+                                console.log(data_gui_di);
+                                var json = JSON.parse(data);
+                                alert("da gui thanh cong");
+                                if (json.ok) {
+                                    dialog_add.close();
+                                    capnhatdonnhap();
+                                }
+                                else {
+                                    alert(json.msg);
+                                }
+                            });
+                        }
+                    }
+                },
+                close: {
+                    btnClass: 'btn-red any-other-class'
+                }
+            }
+        });
+    } //mắc date trùng -> giải pháp: Lấy datetime-local
+
+    function xoa_don_nhap(madonnhap, json) {
+        var don;
+        for (var obj of json.data) {
+            if (obj.madonnhap == madonnhap) {
+                don = obj;
+                break;
+            }
+        }
+        var dialog_xoa = $.confirm({
+            title: `Xác nhận xóa đơn ${don.madonnhap}`,
+            content: `Are you sure ?`,
+            buttons: {
+                YES: {
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        var data_gui_di = {
+                            action: 'xoa_don_nhap',
+                            madonnhap: madonnhap,
+                        }
+                        $.post(api, data_gui_di, function (data) {
+                            var json = JSON.parse(data);
+                            if (json.ok) {
+                                dialog_xoa.close();
+                                capnhatdonnhap();
+                            } else {
+                                alert(json.msg)
+                            }
+                        })
+                    }
+                },
+                NO: {
+                    btnClass: 'btn-red any-other-class',
+                }
+            }
+        });
+    }
+
+    function donnhapdaxoa() {
+        $.confirm({
+            title: "Danh sách đơn nhập đã xóa",
+            content: `<div id="ds_xoa_dn">Loading......</div>`,
+            columnClass: 'col-md-12',
+            type: 'green',
+            typeAnimated: true,
+            onContentReady: function () {
+                donnhapxoa();
+            }
+        });
+    }
+
+    function donnhapxoa() {
+        $.post(api, { action: 'don_nhap_da_xoa' },
+            function (data) {
+                var json = JSON.parse(data);
+                var noidung = "";
+                if (json.ok) {
+                    noidung += `<table class="table table-hover">`;
+                    noidung += `<thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã đơn nhập</th>
+                        <th>Mã nhà cung cấp</th>
+                        <th>Tên nhà cung cấp</th>
+                        <th>Ngày xóa</th>
+                    </tr>
+                    </thead><tbody>`;
+                    var stt = 0;
+                    for (var dh of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
+                        noidung += `
+                        <tr>
+                            <td>${++stt}</td>
+                            <td>${dh.madonnhap}</td>
+                            <td>${dh.mancc}</td>
+                            <td>${dh.tenncc}</td>
+                            <td>${dh.delat}</td>
+                        </tr>`;
+                    }
+                    noidung += "</tbody></table>"
+                }
+                else {
+                    noidung = " khong co du lieu";
+                }
+                $('#ds_xoa_dn').html(noidung);
+            }
+        )
+    }
+
+
+    $('#xem-don-nhap').click(function () {
+        if (checkAccess(quyen) == 1) {
+            list_don_nhap();
+        }
+        else if (checkAccess(quyen) == 0) {
+            alert("Bạn cần đăng nhập để sử dụng chức năng này");
+        }
+        else if (checkAccess(quyen) == 2) {
+            alert("Bạn không đủ quyền để thực hiện ")
+        }
+        else if (checkAccess(quyen) == 3) {
+            list_don_nhap();
+        }
+    });
+
     $('#them-don').click(function () {
         if (checkAccess(quyen) == 1) {
             them_don();
@@ -642,7 +992,9 @@
         else if (checkAccess(quyen) == 2) {
             them_don();
         }
-
+        else if (checkAccess(quyen) == 3) {
+            alert("Bạn không đủ quyền để thực hiện ")
+        }
     });
 
     $('#xem-don').click(function () {
@@ -655,7 +1007,9 @@
         else if (checkAccess(quyen) == 2) {
             list_don();
         }
-
+        else if (checkAccess(quyen) == 3) {
+            alert("Bạn không đủ quyền để thực hiện ")
+        }
     });
 
     $('#don-da-xoa').click(function () {
@@ -669,18 +1023,24 @@
         else if (checkAccess(quyen) == 2) {
             dondaxoa();
         }
+        else if (checkAccess(quyen) == 3) {
+            alert("Bạn không đủ quyền để thực hiện ")
+        }
     });
-    $('#cong-thuc').click(function () {
+    
+    $('#don-da-done').click(function () {
         if (checkAccess(quyen) == 1) {
-            congthuc();
+            dondadone();
         }
         else if (checkAccess(quyen) == 0) {
             alert("Bạn cần đăng nhập để sử dụng chức năng này");
         }
         else if (checkAccess(quyen) == 2) {
-            congthuc();
+            dondadone();
         }
-
+        else if (checkAccess(quyen) == 3) {
+            alert("Bạn không đủ quyền để thực hiện ")
+        }
     });
 })
 
