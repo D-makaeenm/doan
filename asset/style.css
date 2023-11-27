@@ -1,9 +1,31 @@
-﻿.custom-large-button {
+﻿custom-large-button {
     font-size: 20px; /* Đặt kích thước chữ */
     padding: 20px 40px; /* Đặt lề để tạo kích thước */
 }
 
-.custom-width{
+custom-width{
     width:80%;
     margin-right:90px;
+}
+round-button {
+    width: 50px;
+    height: 50px;
+    background-color: deeppink; /* Màu nền của nút */
+    color: #fff; /* Màu chữ của nút */
+    border-radius: 50%; /* Bo tròn góc của nút để tạo hình tròn */
+    border: none; /* Loại bỏ đường viền */
+    cursor: pointer; /* Biến con trỏ thành hình cửa sổ khi di chuột qua */
+    display: none;
+}
+
+fixed-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: deeppink;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
 }

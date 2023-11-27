@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using static System.Collections.Specialized.BitVector32;
 
 namespace doan
 {
@@ -26,7 +27,8 @@ namespace doan
                 case "done_don_hang":
                 case "don_da_xoa":
                 case "don_da_done":
-                    cmd.Parameters.Add("@congthuc", SqlDbType.NVarChar, -1).Value = Request["congthuc"];
+                case "xem_phan_hoi":
+                case "nhan_phan_hoi":
                     cmd.Parameters.Add("@ngaydat", SqlDbType.Date).Value = Request["ngaydat"];
                     cmd.Parameters.Add("@mabanh", SqlDbType.NVarChar, 10).Value = Request["mabanh"];
                     cmd.Parameters.Add("@makh", SqlDbType.NVarChar, 255).Value = Request["makh"];
@@ -41,16 +43,8 @@ namespace doan
                     cmd.Parameters.Add("@delat", SqlDbType.Date).Value = Request["delat"];
                     cmd.Parameters.Add("@doneat", SqlDbType.Date).Value = Request["doneat"];
                     cmd.Parameters.Add("@madon", SqlDbType.Int).Value = Request["madon"];
+                    cmd.Parameters.Add("@noidung", SqlDbType.NVarChar, -1).Value = Request["noidung"];
                     break;
-            }
-            switch (action)
-            {
-                case "doanh_thu":
-                    cmd.Parameters.Add("@thiethai", SqlDbType.Int).Value = Request["thiethai"];
-                    cmd.Parameters.Add("@ngayvao", SqlDbType.Date).Value = Request["ngayvao"];
-                    cmd.Parameters.Add("@ngayra", SqlDbType.Date).Value = Request["ngayra"];
-                    break;
-                
             }
             string json = (string)db.Scalar(cmd);
             Response.Write(json);
@@ -65,6 +59,8 @@ namespace doan
                 case "list_don_nhap":
                 case "them_don_nhap":
                 case "don_nhap_da_xoa":
+                case "don_nhap_da_done":
+                case "done_don_nhap":
                 case "xoa_don_nhap":
                     cmd.Parameters.Add("@madonnhap", SqlDbType.Int).Value = Request["madonnhap"];
                     cmd.Parameters.Add("@ngaynhap", SqlDbType.DateTime).Value = Request["ngaynhap"];
@@ -83,12 +79,31 @@ namespace doan
             Response.Write(json);
         }
 
+        void doanhthu(string action)
+        {
+            SqlServer db = new SqlServer();
+            SqlCommand cmd = db.GetCmd("ql_don", action);
+            switch (action)
+            {
+                case "tinh_doanh_thu":
+                case "tinh_tien_thu":
+                case "tinh_tien_chi":
+                    cmd.Parameters.Add("@tienthu", SqlDbType.Int).Value = Request["tienthu"];
+                    cmd.Parameters.Add("@tienchi", SqlDbType.Int).Value = Request["tienchi"];
+                    cmd.Parameters.Add("@doanhthu", SqlDbType.Int).Value = Request["doanhthu"];
+                    cmd.Parameters.Add("@ngayvao", SqlDbType.Date).Value = Request["ngayvao"];
+                    cmd.Parameters.Add("@ngayra", SqlDbType.Date).Value = Request["ngayra"];
+                    break;
+            }
+            string json = (string)db.Scalar(cmd);
+            Response.Write(json);
+        }
         void logins(string action)
         {
             SqlServer db = new SqlServer();
             SqlCommand cmd = db.GetCmd("ql_taikhoan", action);
             string json = (string)db.Scalar(cmd);
-            Response.Write(json);//thang nay xuot du lieu trong db thanh chuoi trong json
+            Response.Write(json);//thang nay xuat du lieu trong db thanh chuoi trong json
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -103,8 +118,9 @@ namespace doan
                 case "done_don_hang":
                 case "cong_thuc":
                 case "edit_don_hang":
+                case "xem_phan_hoi":
+                case "nhan_phan_hoi":
                 case "xoa_don_hang":
-                case "doanh_thu":
                     xuly_donhang(action);
                     break;
                 case "logins":
@@ -112,9 +128,16 @@ namespace doan
                     break;
                 case "list_don_nhap":
                 case "them_don_nhap":
+                case "don_nhap_da_done":
+                case "done_don_nhap":
                 case "don_nhap_da_xoa":
                 case "xoa_don_nhap":
                     nhap_hang(action);
+                    break;
+                case "tinh_doanh_thu":
+                case "tinh_tien_thu":
+                case "tinh_tien_chi":
+                    doanhthu(action);
                     break;
             }
         }

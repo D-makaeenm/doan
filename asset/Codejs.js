@@ -6,7 +6,7 @@
     let quyen = 0;
 
     function load_gui(dalogin, quyen) {
-        if (dalogin == true && quyen == 1 || dalogin == true && quyen == 2) {
+        if (dalogin == true && quyen == 1 || dalogin == true && quyen == 2) { //quyen quan ly + nhan vien
             $('#xem-don').show();
             $('#tong-thu-chi').show();
             $('#them-don').show();
@@ -14,14 +14,21 @@
             $('#don-da-done').show();
             $('#div-kh').hide();
             $('#xem-don-nhap').show();
+            $('#messageql').show();
         }
-        else if (dalogin == true && quyen == 3) {
+        else if (dalogin == true && quyen == 3) {//quen nha cung cap
             $('#xem-don').hide();
             $('#tong-thu-chi').hide();
             $('#them-don').hide();
             $('#don-da-xoa').hide();
             $('#div-kh').hide();
             $('#xem-don-nhap').show();
+            $('#messageql').hide();
+            $('#messagekh').hide();
+        }
+        else if(dalogin = false){ //quyen khach hang
+            $('#messagekh').show();
+            $('#messageql').hide();
         }
     } //giao dien khi dang nhap voi cac quyen
 
@@ -384,6 +391,7 @@
                         <th>Mã đơn</th>
                         <th>Mã khách hàng</th>
                         <th>Tên khách hàng</th>
+                        <th>Tổng tiền</th>
                         <th>Ngày hoàn thành</th>
                     </tr>
                     </thead><tbody>`;
@@ -395,6 +403,7 @@
                             <td>${dh.madon}</td>
                             <td>${dh.makh}</td>
                             <td>${dh.tenkh}</td>
+                            <td>${dh.tongtien}</td>
                             <td>${dh.doneat}</td>
                         </tr>`;
                     }
@@ -626,53 +635,77 @@
                     action: function () {
                         var ngayvao = $('#ngay-vao').val();
                         var ngayra = $('#ngay-ra').val();
+                        var tienthune = 0;
+                        var doanhthune = 0;
+                        var tienchine = 0;
                         if (ngayra === "" || ngayvao === "") {
                             alert("Hãy điền đủ thông tin");
                         }
                         else {
                             var data_gui_di = {
-                                action: 'doanh_thu',
+                                action: 'tinh_tien_thu',
                                 ngayvao: ngayvao,
                                 ngayra: ngayra
                             }
-
-                            $.post(api, data_gui_di, function (data) {
-                                console.log(data_gui_di);
+                            var data_gui_di2 = {
+                                action: 'tinh_tien_chi',
+                                ngayvao: ngayvao,
+                                ngayra: ngayra
+                            }
+                            $.post(api, data_gui_di2, function (data) { //post 1
+                                console.log(data_gui_di2);
                                 var json = JSON.parse(data);
-                                var noidung = "";
                                 if (json.ok) {
-                                    noidung += `<table class="table table-hover">`;
-                                    noidung += `<thead>
-                                <tr>
-                                    <th>Tiền thu</th>
-                                    <th>Tiền chi</th>
-                                    <th>Tổng doanh thu</th>
-                                </tr>
-                                </thead><tbody>`;
-                                    var tongdt = 0;
-                                    var tienthu = 0;
-                                    var tienchi = 0;
                                     for (var dh of json.data) {
-                                        tienthu += parseInt(dh.tongtien);
-                                        tienchi += parseInt(dh.tienthu);
-                                        tongdt = tienthu - tienchi;
+                                        tienchine = dh.tienchi;
+                                        //tienchine sang dc post 2 -> xuyen suot post
                                     }
-                                    noidung += `
+                                }
+                                $.post(api, data_gui_di, function (data) { //post 2
+                                    console.log(data_gui_di);
+                                    var json = JSON.parse(data);
+                                    var noidung = "";
+                                    if (json.ok) {
+                                        noidung += `<table class="table table-hover">`;
+                                        noidung += `<thead>
                                         <tr>
-                                        <td>${tienthu}</td>
-                                        <td>${tienchi}</td>
-                                        <td>${tongdt}</td>
-                                        </tr>`;
-                                    noidung += `</tbody></table>`;
-                                }
-                                else {
-                                    noidung = "Không có dữ liệu doanh thu cho khoảng thời gian này.";
-                                }
-                                $('#dt-thang').html(noidung);
+                                            <th>Tiền thu</th>
+                                            <th>Tiền chi</th>
+                                            <th>Tổng doanh thu</th>
+                                        </tr>
+                                    </thead><tbody>`;
+                                        for (var dh of json.data) {
+                                            tienthune = dh.tienthu;
+                                            doanhthune = tienthune - tienchine;
+                                            noidung += `
+                                            <tr>
+                                            <td>${tienthune}</td>
+                                            <td>${tienchine}</td>
+                                            <td>${doanhthune}</td>
+                                            </tr>`;
+                                        }
+                                        noidung += `</tbody></table>`;
+                                    }
+                                    else {
+                                        noidung = "Không có dữ liệu doanh thu cho khoảng thời gian này.";
+                                    }
+                                    $('#dt-thang').html(noidung);
+
+                                    var data_gui_di3 = {
+                                        action: 'tinh_doanh_thu',
+                                        tienthu: tienthune,
+                                        tienchi: tienchine,
+                                        doanhthu: doanhthune
+                                    }
+                                    $.post(api, data_gui_di3, function (data) {
+                                        console.log(data_gui_di);
+                                        var json = JSON.parse(data);
+                                        //alert("da gui thanh cong");
+                                    });
+                                });
                             });
+
                         }
-
-
                         return false;
                     }
                 },
@@ -686,6 +719,7 @@
         });
     }
 
+    
 
     function list_don_nhap() {
         $.confirm({
@@ -709,6 +743,14 @@
                     btnClass: 'btn-green any-other-class',
                     action: function () {
                         donnhapdaxoa();
+                        return false;
+                    }
+                },
+                xemdondone: {
+                    text: "Xem đơn nhập đã done",
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        donnhapdadone();
                         return false;
                     }
                 },
@@ -758,8 +800,8 @@
                             <td>${dhn.sdtncc}</td>
                             <td>${dhn.tenbanh}</td>
                             <td>${dhn.sln}</td>
-                            <td>${dhn.tongtiennhap}</td>
                             <td>${dhn.size}</td>
+                            <td>${dhn.tongtiennhap}đ</td>
                             <td>${sua_xoa}</td>
                         </tr>`;
                     }
@@ -779,14 +821,104 @@
                             //dùng id vào đây để hàm này xử, cho khỏi rối code
                         }
                         else if (action == 'done_don_nhap') {
-                            alert('Chức năng chưa sãn sàng'); 
-                            /*done_don_nhap(madonnhap, json);*/
+                            done_don_nhap(madonnhap, json);
                         }
                     } else {
                         alert("Bạn không có đủ quyền để thao tác")
                         return false;
                     }
                 });
+            }
+        )
+    }
+
+    function done_don_nhap(madonnhap, json) {
+        var don;
+        for (var obj of json.data) {
+            if (obj.madonnhap == madonnhap) {
+                don = obj;
+                break;
+            }
+        }
+        var dialog_done = $.confirm({
+            title: `Xác nhận hoàn thành đơn ${don.madonnhap}`,
+            content: `Are you sure ?`,
+            buttons: {
+                YES: {
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        var data_gui_di = {
+                            action: 'done_don_nhap',
+                            madonnhap: madonnhap,
+                        }
+                        $.post(api, data_gui_di, function (data) {
+                            var json = JSON.parse(data);
+                            if (json.ok) {
+                                dialog_done.close();
+                                capnhatdonnhap();
+                            } else {
+                                alert(json.msg)
+                            }
+                        })
+                    }
+                },
+                NO: {
+                    btnClass: 'btn-red any-other-class',
+                }
+            }
+        });
+    }
+
+    function donnhapdadone() {
+        $.confirm({
+            title: "Danh sách đơn hàng nhập đã hoàn thành",
+            content: `<div id="ds_nhap_done">Loading......</div>`,
+            columnClass: 'col-md-12',
+            type: 'green',
+            typeAnimated: true,
+            onContentReady: function () {
+                donnhapdone();
+            }
+        });
+    }
+
+    function donnhapdone() {
+        $.post(api, { action: 'don_nhap_da_done' },
+            function (data) {
+                var json = JSON.parse(data);
+                var noidung = "";
+                if (json.ok) {
+                    noidung += `<table class="table table-hover">`;
+                    noidung += `<thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã đơn nhập</th>
+                        <th>Mã nhà cung cấp</th>
+                        <th>Tên nhà cung cấp</th>
+                        <th>Ngày nhập</th>
+                        <th>Tổng tiền</th>
+                        <th>Ngày hoàn thành</th>
+                    </tr>
+                    </thead><tbody>`;
+                    var stt = 0;
+                    for (var dh of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
+                        noidung += `
+                        <tr>
+                            <td>${++stt}</td>
+                            <td>${dh.madonnhap}</td>
+                            <td>${dh.mancc}</td>
+                            <td>${dh.tenncc}</td>
+                            <td>${dh.ngaynhap}</td>
+                            <td>${dh.tongtiennhap}</td>
+                            <td>${dh.doneat}</td>
+                        </tr>`;
+                    }
+                    noidung += "</tbody></table>"
+                }
+                else {
+                    noidung = " khong co du lieu";
+                }
+                $('#ds_nhap_done').html(noidung);
             }
         )
     }
@@ -828,7 +960,10 @@
                             buttons: {
                                 ok: {
                                     text: `Rồi`,
-                                    btnClass: 'btn-green any-other-class'
+                                    btnClass: 'btn-green any-other-class',
+                                    action: function () {
+                                        return false;
+                                    }
                                 },
                                 no: {
                                     btnClass: 'btn-red any-other-class'
@@ -860,7 +995,6 @@
                             $.post(api, data_gui_di, function (data) {
                                 console.log(data_gui_di);
                                 var json = JSON.parse(data);
-                                alert("da gui thanh cong");
                                 if (json.ok) {
                                     dialog_add.close();
                                     capnhatdonnhap();
@@ -966,6 +1100,121 @@
         )
     }
 
+    $('#messagekh').click(function () {
+        var dialog_add = $.confirm({
+            title: `Phản hồi vói cửa hàng`,
+            type: 'green',
+            typeAnimated: true,
+            content: '' + '<label>Tên của bạn</label>' + '<input class="name form-control" placeholder="Tên" id="ten-kh">' +
+                '<label>Tên bánh: </label>' + 
+                `<select name="tenbanh" style = "margin-left:5px; margin-top:5px" id= "ten-banh">
+                <option value="Pizza Margherita">Pizza Margherita</option>
+                <option value="Pizza thập cẩm">Pizza thập cẩm</option>
+                <option value="Pizza bò">Pizza bò bằm</option>
+                <option value="Pizza biển khơi">Pizza hải sản</option>
+                <option value="Pizza Hawaii">Pizza Hawaii</option>
+                <option value="Pizza phô mai">Pizza phô mai</option>
+                </select><br>` +
+                '<label>Phản hồi</label><br>' + `<textarea id="noi-dung" style="width: 300px;
+            height: 80px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            word-wrap: break-word;" class="large-input" placeholder="Nhập vào đây"></textarea>`
+            ,
+            buttons: {
+                save: {
+                    text: `Gửi`,
+                    btnClass: 'btn-green any-other-class',
+                    action: function () {
+                        var tenkh = $('#ten-kh').val();
+                        var tenbanh = $('#ten-banh').val();
+                        var noidung = $('#noi-dung').val();
+                        if (checkdau(tenkh) == false) {
+                            alert("xin điền đủ họ tên có dấu")
+                            return false;
+                        }
+                        if (tenkh === "" || tenbanh === "" || noidung === "" ) {
+                            alert("Hãy nhập đủ dữ liệu");
+                            return false;
+                        }
+                        else {
+                            var data_gui_di = {
+                                action: 'nhan_phan_hoi',
+                                tenkh: tenkh,
+                                tenbanh: tenbanh,
+                                noidung: noidung,
+                            }
+                            $.post(api, data_gui_di, function (data) {
+                                console.log(data_gui_di);
+                                var json = JSON.parse(data);
+                                alert("Chúng tôi đã lưu lại phản hồi của bạn");
+                            });
+                        }
+                    }
+                },
+                close: {
+                    btnClass: 'btn-red any-other-class'
+                }
+            }
+        });
+    });
+
+    $('#messageql').click(function () {
+        $.confirm({
+            title: "Danh sách phản hồi",
+            content: '' +
+                '<div id="ds_phan_hoi">Loading......</div>',
+            columnClass: 'col-md-12',
+            type: 'green',
+            typeAnimated: true,
+            buttons: {
+                Close: {
+                    btnClass: 'btn-red any-other-class'
+                }
+            },
+
+            onContentReady: function () {
+                phanhoikh();
+            }
+        });
+    })
+
+    function phanhoikh() {
+        $.post(api, { action: 'xem_phan_hoi' },
+            function (data) {
+                var json = JSON.parse(data);
+                var noidung = "";
+                if (json.ok) {
+                    noidung += `<table class="table table-hover">`;
+                    noidung += `<thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên khách hàng</th>
+                        <th>Tên bánh</th>
+                        <th>Nội dung</th>
+                    </tr>
+                    </thead><tbody>`;
+                    var stt = 0;
+                    for (var dh of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
+                        noidung += `
+                        <tr>
+                            <td>${++stt}</td>
+                            <td>${dh.tenkh}</td>
+                            <td>${dh.tenbanh}</td>
+                            <td>${dh.noidung}</td>
+                        </tr>`;
+                    }
+                    noidung += "</tbody></table>"
+                }
+                else {
+                    noidung = "khong co du lieu";
+                }
+                $('#ds_phan_hoi').html(noidung);
+            }
+        )
+    }
 
     $('#xem-don-nhap').click(function () {
         if (checkAccess(quyen) == 1) {
