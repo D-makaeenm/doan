@@ -1,41 +1,4 @@
 ﻿
-USE [doan3an1]
-GO
-USE [doan3an1]
-GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-create procedure [dbo].[ql_don]
-	@action nvarchar(50) = 'list_don_hang',
-	@madon int = null,
-	@makh nvarchar(255) = null,
-	@ngaydat date = null,
-	@tongtien nvarchar(255) = null,
-	@tk nvarchar(50) = null,
-	@mk nvarchar(50) = null
-as
-begin
-	declare @json nvarchar(max)='';
-	if(@action = 'list_don_hang')
-	begin
-		select @json+=FORMATMESSAGE(N'{"madon":%d,"makh":"%s","tongtien":%d,"ngaydat":"%s"},',
-				[Mã đơn],[Mã khách hàng],CONVERT(NVARCHAR, [Tổng tiền]), CONVERT(nvarchar, [Ngày đặt], 23))
-		from donhang
-		if((@json is null)or(@json=''))
-			select N'{"ok":0,"msg":"không có dữ liệu","data":[]}' as json;
-		else
-			begin
-				select @json=REPLACE(@json,'(null)','null')
-				select N'{"ok":1,"msg":"ok","data":['+left(@json,len(@json)-1)+']}' as json;
-			end
-	end
-end
-
-
-
 --create table nguyenlieu
 --(
 --	[Mã nguyên liệu] nchar(10) primary key,
@@ -47,86 +10,114 @@ end
 --	constraint FK_nguyenlieu_banh foreign key ([Mã chi tiết]) REFERENCES banh([Mã chi tiết])
 --)
 
-drop table nguyenlieu
+
 drop table banh
 drop table slban
-
-alter table nguyenlieu
-alter column [Tổng tiền] int
 
 
 create table banh
 (
-	[Mã chi tiết] nchar(10) primary key,
-	[Mã bánh] nchar(10),
+	[Mã bánh] nchar(10)  primary key,
 	[Tên bánh] nvarchar(50),
 	Size nchar(10),
-	[Giá tiền] int--thằng này là tiền 1 cái
+	[Giá nhập] int null,
+	[Giá bán] int null,
 )
 
+drop table nhapbanh
 
+create table nhapbanh
+(
+	[Mã đơn nhập] int identity(1,1) primary key,
+	[Ngày nhập] datetime,
+	[Mã xưởng] nvarchar(50),
+	[Tên xưởng] nvarchar(50),
+	[Số điện thoại] nvarchar(50),
+	del_at datetime null,
+	done_at datetime null
+)
 
+create table chitietnhap
+(
+	[Mã bánh] nchar(10),
+	[Tên bánh] nvarchar(50),
+	[Số lượng] int null,
+	[Ngày nhập] datetime,
+	[Mã đơn nhập] int,
+	[Tổng tiền] int,
+	Size nchar(10),
+	constraint FK_chitietnhap_banh foreign key ([Mã bánh]) REFERENCES banh([Mã bánh]),
+	constraint FK_chitietnhap_nhapbanh foreign key ([Mã đơn nhập]) REFERENCES nhapbanh([Mã đơn nhập])
+)
+
+drop table chitietnhap
+drop table banh
+drop table nhapbanh
 
 drop table slban
+drop table doanhthu
 drop table donhang
 drop table khachhang
-drop table thiethai
 
-create table slban --thằng này chiếu đến donhang qua mã đơn -> thằng này phải có khóa riêng và 1 thuộc tính của thằng cha
+
+create table slban
 (
-	[Mã chi tiết] nchar(10),
 	[Mã đơn] int,
-	[Mã khách hàng] nvarchar(50),
+	[Tên khách hàng] nvarchar(50),
+	[Tên bánh] nvarchar(50),
+	Size nchar(10),
 	[Mã bánh] nchar(10),
+	[Ngày đặt] date null,
 	[Số lượng] int
 	constraint FK_slban_donhang foreign key ([Mã đơn]) REFERENCES donhang([Mã đơn]),
-	constraint FK_slban_banh foreign key ([Mã chi tiết]) REFERENCES banh([Mã chi tiết])
+	constraint FK_slban_banh foreign key ([Mã bánh]) REFERENCES banh([Mã bánh])
+)
+
+drop table doanhthu
+
+create table doanhthu
+(
+	[Tiền thu] int null,
+	[Tiền chi] int null,
+	[Doanh thu] int null,
+	[Xem lúc] datetime null
 )
 
 create table donhang
 (
-	[Mã đơn] int identity(1,1) not null,
-	[Mã khách hàng] nvarchar(50) not null,
+	[Mã đơn] int identity(1,1) not null primary key,
+	[Mã khách hàng] int,
+	[Tên khách hàng] nvarchar(50),
 	[Tổng tiền] int null, -- thằng này tính theo số lượng bánh vd: pz hải sản size s 90k bán 2 cái -> tt = sl x giá 
 	[Ngày đặt] date null,
-	del_at datetime null
- CONSTRAINT PK_donhang PRIMARY KEY CLUSTERED 
-(
-	[Mã đơn] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	del_at datetime null,
+	done_at datetime null
+	constraint FK_donhang_khachhang foreign key ([Mã khách hàng]) REFERENCES khachhang([Mã khách hàng])
+)
 
 DBCC CHECKIDENT ('donhang', RESEED, 0);--đặt identity về 1
 
-
 create table khachhang
 (
-	[Mã khách hàng] nvarchar(50) primary key,
-	[Mã đơn] int,
+	[Mã khách hàng] int identity(1,1) primary key,
 	[Tên khách hàng] nvarchar(50),
 	[Địa chỉ] nvarchar(50),
-	SDT	nvarchar(50)
-	CONSTRAINT PK_khachhang_donhang foreign key ([Mã đơn]) REFERENCES donhang([Mã đơn])
+	SDT	nvarchar(50),
+)
+
+
+drop table phanhoi
+
+create table phanhoi
+(	
+	[Nội dung] nvarchar(max) null,
+	[Tên khách hàng] nvarchar(50) null,
+	[Tên bánh] nvarchar(50) null
 )
 
 create table login
 (
 	[Tên đăng nhập] nvarchar(50),
 	[Mật khẩu] nvarchar(50)
+	roles 
 )
-
-create table thiethai
-(
-	[Mã khách hàng] nvarchar(50) null,
-	[Mã đơn] int null,
-	[Thiệt hại] int null
-	constraint FK_thiethai_donhang foreign key ([Mã đơn]) REFERENCES donhang([Mã đơn]),
-)
-
-create table congthuc
-(
-	[Mã bánh] nchar(10),
-	[Tên bánh] nvarchar(50),
-	[Công thức] nvarchar(max)
-)
-
