@@ -1,13 +1,13 @@
-﻿custom-large-button {
+﻿.custom-large-button {
     font-size: 20px; /* Đặt kích thước chữ */
     padding: 20px 40px; /* Đặt lề để tạo kích thước */
 }
 
-custom-width{
+.custom-width{
     width:80%;
     margin-right:90px;
 }
-round-button {
+.round-button {
     width: 50px;
     height: 50px;
     background-color: deeppink; /* Màu nền của nút */
@@ -18,7 +18,7 @@ round-button {
     display: none;
 }
 
-fixed-button {
+.fixed-button {
     position: fixed;
     bottom: 20px;
     right: 20px;

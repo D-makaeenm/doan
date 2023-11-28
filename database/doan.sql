@@ -26,6 +26,16 @@ create table banh
 
 drop table nhapbanh
 
+drop table kho
+
+create table kho
+(
+	[Mã bánh] nchar(10) null,
+	[Tên bánh] nvarchar(50) null,
+	Size nchar(10) null,
+	[Số lượng] int null,
+)
+
 create table nhapbanh
 (
 	[Mã đơn nhập] int identity(1,1) primary key,
@@ -51,14 +61,22 @@ create table chitietnhap
 )
 
 drop table chitietnhap
-drop table banh
 drop table nhapbanh
-
+drop table kho
+drop table khoban
 drop table slban
 drop table doanhthu
 drop table donhang
 drop table khachhang
 
+create table khoban
+(
+	[Mã bánh] nchar(10),
+	[Số lượng] int,
+	[Tên bánh] nvarchar(50),
+	Size nchar(10),
+	[Ngày đặt] datetime,
+)
 
 create table slban
 (
@@ -67,13 +85,12 @@ create table slban
 	[Tên bánh] nvarchar(50),
 	Size nchar(10),
 	[Mã bánh] nchar(10),
-	[Ngày đặt] date null,
+	[Ngày đặt] datetime,
 	[Số lượng] int
 	constraint FK_slban_donhang foreign key ([Mã đơn]) REFERENCES donhang([Mã đơn]),
 	constraint FK_slban_banh foreign key ([Mã bánh]) REFERENCES banh([Mã bánh])
 )
 
-drop table doanhthu
 
 create table doanhthu
 (
@@ -89,7 +106,7 @@ create table donhang
 	[Mã khách hàng] int,
 	[Tên khách hàng] nvarchar(50),
 	[Tổng tiền] int null, -- thằng này tính theo số lượng bánh vd: pz hải sản size s 90k bán 2 cái -> tt = sl x giá 
-	[Ngày đặt] date null,
+	[Ngày đặt] datetime,
 	del_at datetime null,
 	done_at datetime null
 	constraint FK_donhang_khachhang foreign key ([Mã khách hàng]) REFERENCES khachhang([Mã khách hàng])

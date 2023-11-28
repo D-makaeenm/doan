@@ -15,6 +15,7 @@
             $('#div-kh').hide();
             $('#xem-don-nhap').show();
             $('#messageql').show();
+            $('#kho').show();
         }
         else if (dalogin == true && quyen == 3) {//quen nha cung cap
             $('#xem-don').hide();
@@ -25,10 +26,12 @@
             $('#xem-don-nhap').show();
             $('#messageql').hide();
             $('#messagekh').hide();
+            $('#kho').hide();
         }
         else if(dalogin = false){ //quyen khach hang
             $('#messagekh').show();
             $('#messageql').hide();
+
         }
     } //giao dien khi dang nhap voi cac quyen
 
@@ -209,6 +212,65 @@
                     noidung = " khong co du lieu";
                 }
                 $('#ds_xoa').html(noidung);
+            }
+        )
+    }
+
+    $('#kho').click(function () {
+        list_kho();
+    });
+
+    function list_kho() {
+        $.confirm({
+            title: "Danh sách hàng",
+            content: '' +
+                '<div id="ds_kho">Loading......</div>',
+            columnClass: 'col-md-12',
+            type: 'green',
+            typeAnimated: true,
+            buttons: {
+                Close: {
+                    btnClass: 'btn-red any-other-class'
+                }
+            },
+
+            onContentReady: function () {
+                capnhatkho();
+            }
+        });
+    }
+
+    function capnhatkho() {
+        $.post(api, { action: 'show_kho' },
+            function (data) {
+                var json = JSON.parse(data);
+                var noidung = "";
+                if (json.ok) {
+                    noidung += `<table class="table table-hover">`;
+                    noidung += `<thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên bánh</th>
+                        <th>Size</th>
+                        <th>Số lượng</th>
+                    </tr>
+                    </thead><tbody>`;
+                    var stt = 0;
+                    for (var dh of json.data) {//moi 1 don hang trong json thi lam gi (lay thuoc tinh moi don hang )
+                        noidung += `
+                        <tr>
+                            <td>${++stt}</td>
+                            <td>${dh.tenbanh}</td>
+                            <td>${dh.size}</td>
+                            <td>${dh.sl}</td>
+                        </tr>`;
+                    }
+                    noidung += "</tbody></table>"
+                }
+                else {
+                    noidung = "khong co du lieu";
+                }
+                $('#ds_kho').html(noidung);
             }
         )
     }
@@ -547,7 +609,7 @@
 			    '<label>Tên khách hàng:</label>' + '<input class="name form-control" placeholder="Vui lòng viết có dấu" id="ten-kh">' +
 			    '<label>Địa chỉ:</label>' + '<input class="name form-control" id="dia-chi">' +
 			    '<label>SDT</label>' + '<input class="name form-control" id="sdt">' +
-			    '<label style = "margin-top:10px"> Ngày đặt:</label>' + '<input style = "margin-top:10px" id = "ngay-dat" type="date" name="datePicker"><br>' +
+                '<label style = "margin-top:10px"> Ngày đặt:</label>' + '<input style = "margin-top:10px" id = "ngay-dat" type="datetime-local" name="datePicker"><br>' +
                 '<label style = "margin-top:10px">Tên bánh:</label>' +
                 `<select name="tenbanh" style = "margin-top:10px" id= "ten-banh">
                 <option value="Pizza Margherita">Pizza Margherita</option>
@@ -961,9 +1023,6 @@
                                 ok: {
                                     text: `Rồi`,
                                     btnClass: 'btn-green any-other-class',
-                                    action: function () {
-                                        return false;
-                                    }
                                 },
                                 no: {
                                     btnClass: 'btn-red any-other-class'

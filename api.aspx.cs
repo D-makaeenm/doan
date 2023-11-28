@@ -29,7 +29,8 @@ namespace doan
                 case "don_da_done":
                 case "xem_phan_hoi":
                 case "nhan_phan_hoi":
-                    cmd.Parameters.Add("@ngaydat", SqlDbType.Date).Value = Request["ngaydat"];
+                case "show_kho":
+                    cmd.Parameters.Add("@ngaydat", SqlDbType.DateTime).Value = Request["ngaydat"];
                     cmd.Parameters.Add("@mabanh", SqlDbType.NVarChar, 10).Value = Request["mabanh"];
                     cmd.Parameters.Add("@makh", SqlDbType.NVarChar, 255).Value = Request["makh"];
                     cmd.Parameters.Add("@size", SqlDbType.NVarChar, 10).Value = Request["size"];
@@ -121,11 +122,12 @@ namespace doan
                 case "xem_phan_hoi":
                 case "nhan_phan_hoi":
                 case "xoa_don_hang":
+                case "show_kho":
                     xuly_donhang(action);
                     break;
                 case "logins":
                     logins(action);
-                    break;
+                    break; 
                 case "list_don_nhap":
                 case "them_don_nhap":
                 case "don_nhap_da_done":
